@@ -30,7 +30,7 @@
     ef-themes                       ;; color themes
     ;;neotree                         ;; Tree File Browser
     zoom                            ;; better window splitting
-    ;;ace-window                      ;; easier switching between windows
+    ace-window                      ;; easier switching between windows
     markdown-mode
     multiple-cursors                ;; multi editing like PyCharm
     expand-region                   ;; nice expansion of selection like in PyCharm
@@ -62,6 +62,8 @@
 
 ;; Start Emacs in fullscreen mode
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+(initial-buffer-choice "~/.emacs.d/bookmarks/")
 
 
 (custom-set-variables
@@ -124,9 +126,9 @@
 ;;===============================================
 ;; Folder and Sunrise commander settings
 ;;===============================================
-(add-to-list 'load-path "~/.emacs.d/sunrise-commander/")
-(require 'sunrise)
-(global-set-key (kbd "<f7>") 'sunrise)  ;;to open the file commander
+;;(add-to-list 'load-path "~/.emacs.d/sunrise-commander/")
+;;(require 'sunrise)
+;;(global-set-key (kbd "<f7>") 'sunrise)  ;;to open the file commander
 
 
 (defun hpc ()
@@ -135,10 +137,8 @@
   (dired "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
 
 
-;;(global-set-key (kbd "M-p") 'ace-window)  ;; doesn't seem to work with sunrise commander
+(global-set-key (kbd "M-o") 'ace-window)  ;; doesn't seem to work with sunrise commander
 ;; see here: https://github.com/sunrise-commander/sunrise-commander/issues/108
 
-
-;;(fset 'hpc "C-x d /ssh:voit@login1.hpc.uni-potsdam.de:/work")
 
 
