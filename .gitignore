@@ -3,8 +3,8 @@
 
 # But not these files...
 !.gitignore
-!.init.el
-!.manual_setup_documentation.md
-!.setup_info.md
+!init.el
+!manual_setup_documentation.md
+!setup_info.md
 # etc...
 
