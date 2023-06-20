@@ -27,13 +27,14 @@
 (defvar myPackages
   '(better-defaults                 ;; Set up some better Emacs defaults
     elpy                            ;; Python IDE
-    ef-themes                       ;; color themes
-    ;;neotree                         ;; Tree File Browser
+    ;;ef-themes                       ;; color themes
     zoom                            ;; better window splitting
     ace-window                      ;; easier switching between windows
     markdown-mode
     multiple-cursors                ;; multi editing like PyCharm
     expand-region                   ;; nice expansion of selection like in PyCharm
+    zenburn-theme
+    flycheck
     )
   )
 
@@ -53,8 +54,7 @@
 
 
 ;; Load the theme of choice:
-(load-theme 'ef-day :no-confirm)
-;;(load-theme 'timu-caribbean t)
+(load-theme 'zenburn t)
 
 (setq ido-enable-flex-matching t)       ;;ido mode settings
 (setq ido-everywhere t)
@@ -63,19 +63,22 @@
 ;; Start Emacs in fullscreen mode
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(initial-buffer-choice "~/.emacs.d/bookmarks/")
-
+(global-set-key (kbd "<C-tab>") 'ace-window)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "8294b451ffe0575fcccd1a447f56efc94d9560787cd5ff105e620e5f5771427d" default))
+ '(ispell-dictionary nil)
  '(package-selected-packages
-   '(multiple-cursors elpy better-defaults))
+   '(flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
  '(zoom-mode t nil (zoom)))
 
- (custom-set-faces
+ 
+(custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
@@ -85,10 +88,13 @@
 ;;===================================================
 ;;IDE Stuff
 ;;===================================================
+;;(when (load "flycheck" t t)
+;;  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+;;  (add-hook 'elpy-mode-hook 'flycheck-mode))
+
 ;; Enable elpy
 (elpy-enable)
 
-(setq json-encoding-pretty-print nil)
 
 ;; workon home  to select conda environments with Alt+x pyvenv-workon
 ;; Choosing an conda environment with pyvenv-workon apparently has to to happen before opening the
@@ -107,8 +113,6 @@
 (require 'expand-region)           ;; smart expanding selection of expressions
 (global-set-key (kbd "C-M-W") 'er/expand-region)
 
-;;(require 'neotree)
-;;(global-set-key [f8] 'neotree-toggle)
 
 
 ;;===================================================
@@ -126,19 +130,39 @@
 ;;===============================================
 ;; Folder and Sunrise commander settings
 ;;===============================================
-;;(add-to-list 'load-path "~/.emacs.d/sunrise-commander/")
-;;(require 'sunrise)
-;;(global-set-key (kbd "<f7>") 'sunrise)  ;;to open the file commander
 
+(setq dired-dwim-target t)      ;;copys to the path of dired in the other window, very helpful for copying to/from server
 
 (defun hpc ()
   "Opens the work folder no the HPC by SSH with dired."
   (interactive)
   (dired "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
 
+(defun double-commander ()
+  "Opens two dired windows. Like Double commander"
+  (interactive)
+  (dired "/home/voit")
+  (dired-other-window "/home/voit"))
 
-(global-set-key (kbd "M-o") 'ace-window)  ;; doesn't seem to work with sunrise commander
-;; see here: https://github.com/sunrise-commander/sunrise-commander/issues/108
+(defun double-commander-remote ()
+  "Opens two dired windows, on local, one on HPC. Like Double commander"
+  (interactive)
+  (dired "/home/voit")
+  (dired-other-window "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
+
+(global-set-key (kbd "<f8>") 'double-commander)
+(global-set-key (kbd "<f9>") 'double-commander-remote)
+
+(add-hook 'dired-mode-hook
+  (lambda ()
+   (local-set-key [f5] 'dired-do-copy)
+   (local-set-key [f6] 'dired-do-rename)
+   (local-set-key (kbd "<tab>") 'other-window)
+   (local-set-key (kbd "C-b") 'bookmark-jump) ))
+
+
+
+
 
 
 

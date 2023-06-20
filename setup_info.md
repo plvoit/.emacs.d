@@ -11,5 +11,9 @@ pip install virtualenv
 
 or sudo apt-install virtualenv
 
+or this:
+sudo apt install python3-venv
+
+
 Choosing an conda environment with pyvenv-workon apparently has to to happen before opening the
 console (starting the python process)
