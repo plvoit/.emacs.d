@@ -146,8 +146,15 @@
 (defun double-commander ()
   "Opens two dired windows. Like Double commander"
   (interactive)
-  (dired "/home/voit")
-  (dired-other-window "/home/voit"))
+  (if (equal system-name "n-hpc-login1")     
+
+       ((dired "/work/voit")
+	(dired-other-window "/work/voit"))
+
+       ((dired "/home/voit")
+       (dired-other-window "/home/voit"))))
+    
+
 
 (defun double-commander-remote ()
   "Opens two dired windows, on local, one on HPC. Like Double commander"
@@ -158,7 +165,6 @@
 
 (global-set-key (kbd "<f8>") 'double-commander)
 (global-set-key (kbd "<f9>") 'double-commander-remote)
-
 (add-hook 'dired-mode-hook
   (lambda ()
    (local-set-key [f5] 'dired-do-copy)
@@ -195,10 +201,6 @@
   (interactive)
   (find-file "~/.emacs.d/init.el"))
 
-(defun printhost ()
-  "prints host name"
-  (interactive)
-  (message system-name))
 
 
 
