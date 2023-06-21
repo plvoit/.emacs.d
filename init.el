@@ -101,7 +101,7 @@
 
 
 (if (equal system-name "n-hpc-login1")
-    (setenv "WORKON_HOME" "/home/voit/.conda3/envs/")
+    (setenv "WORKON_HOME" "/home/voit/.conda/envs/")
     (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))
 
 
