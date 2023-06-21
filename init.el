@@ -141,13 +141,18 @@
 (defun hpc ()
   "Opens the work folder no the HPC by SSH with dired."
   (interactive)
-  (dired "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
+  (dired "/ssh:voit@login/work/voit"))
 
 (defun double-commander ()
-  "Opens two dired windows. Like Double commander"
+  "Opens two dired windows. Like Double Commander."
   (interactive)
-  (dired "/home/voit")
-  (dired-other-window "/home/voit"))    
+  (if (equal system-name "n-hpc-login1")
+      (progn
+        (dired "/work/voit")
+        (dired-other-window "/work/voit"))
+    (progn
+      (dired "/home/voit")
+      (dired-other-window "/home/voit"))))
 
 
 (defun double-commander-remote ()
