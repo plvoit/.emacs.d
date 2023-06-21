@@ -146,14 +146,8 @@
 (defun double-commander ()
   "Opens two dired windows. Like Double commander"
   (interactive)
-  (if (equal system-name "n-hpc-login1")     
-
-       ((dired "/work/voit")
-	(dired-other-window "/work/voit"))
-
-       ((dired "/home/voit")
-       (dired-other-window "/home/voit"))))
-    
+  (dired "/home/voit")
+  (dired-other-window "/home/voit"))    
 
 
 (defun double-commander-remote ()
