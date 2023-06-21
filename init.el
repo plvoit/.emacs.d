@@ -16,10 +16,7 @@
 
 ;; Initializes the package infrastructure
 (package-initialize)
-
-;; If there are no archived package contents, refresh them
-(when (not package-archive-contents)
-  (package-refresh-contents))
+;;(package-refresh-contents) ;; needed if packages are sometimes not installed properly
 
 ;; Installs packages
 ;;
@@ -27,14 +24,17 @@
 (defvar myPackages
   '(better-defaults                 ;; Set up some better Emacs defaults
     elpy                            ;; Python IDE
-    ;;ef-themes                       ;; color themes
     zoom                            ;; better window splitting
-    ace-window                      ;; easier switching between windows
+    ;;ace-window                      ;; easier switching between windows
     markdown-mode
     multiple-cursors                ;; multi editing like PyCharm
     expand-region                   ;; nice expansion of selection like in PyCharm
     zenburn-theme
-    flycheck
+    flycheck                    ;; syntax check for python, seems to work less buggy than flymake
+    magit
+    centaur-tabs
+    all-the-icons              ;;all-the-icons-install-fonts might be needed for the first run (out of emacs)
+    all-the-icons-dired    
     )
   )
 
@@ -63,7 +63,6 @@
 ;; Start Emacs in fullscreen mode
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
-(global-set-key (kbd "<C-tab>") 'ace-window)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -74,7 +73,7 @@
    '("bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "8294b451ffe0575fcccd1a447f56efc94d9560787cd5ff105e620e5f5771427d" default))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
+   '(all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
  '(zoom-mode t nil (zoom)))
 
  
@@ -88,13 +87,13 @@
 ;;===================================================
 ;;IDE Stuff
 ;;===================================================
-;;(when (load "flycheck" t t)
-;;  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-;;  (add-hook 'elpy-mode-hook 'flycheck-mode))
 
-;; Enable elpy
 (elpy-enable)
 
+;;exchange flymake to the more modern flycheck
+(when (load "flycheck" t t)
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  (add-hook 'elpy-mode-hook 'flycheck-mode))
 
 ;; workon home  to select conda environments with Alt+x pyvenv-workon
 ;; Choosing an conda environment with pyvenv-workon apparently has to to happen before opening the
@@ -131,6 +130,7 @@
 ;; Folder and Sunrise commander settings
 ;;===============================================
 
+(setq dired-hide-details t)
 (setq dired-dwim-target t)      ;;copys to the path of dired in the other window, very helpful for copying to/from server
 
 (defun hpc ()
@@ -150,6 +150,7 @@
   (dired "/home/voit")
   (dired-other-window "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
 
+
 (global-set-key (kbd "<f8>") 'double-commander)
 (global-set-key (kbd "<f9>") 'double-commander-remote)
 
@@ -158,11 +159,33 @@
    (local-set-key [f5] 'dired-do-copy)
    (local-set-key [f6] 'dired-do-rename)
    (local-set-key (kbd "<tab>") 'other-window)
-   (local-set-key (kbd "C-b") 'bookmark-jump) ))
+   (local-set-key (kbd "C-b") 'bookmark-jump)
+   (local-set-key (kbd "C-<left>") 'dired-jump-other-window)
+   (local-set-key (kbd "C-<right>") 'dired-jump-other-window)
+   (local-set-key (kbd "<DEL>") 'dired-up-directory)))
 
 
+;;========================================
+;; Centaur Tabs
+;;========================================
+(require 'centaur-tabs)
+(centaur-tabs-mode t)
+(global-set-key (kbd "C-c C-p")  'centaur-tabs-backward)
+(global-set-key (kbd "C-c C-n") 'centaur-tabs-forward)
+(setq centaur-tabs-set-icons t)
 
+(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
+;;(global-set-key (kbd "<M-o>") 'ace-window)
 
+(when (display-graphic-p)
+  (require 'all-the-icons))
 
+;;========================================
+;; Own functions
+;;========================================
 
+(defun init ()
+  "Opens the init file"
+  (interactive)
+  (find-file "~/.emacs.d/init.el"))
