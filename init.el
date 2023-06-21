@@ -189,3 +189,8 @@
   "Opens the init file"
   (interactive)
   (find-file "~/.emacs.d/init.el"))
+
+(defun printhost ()
+  "prints host name"
+  (interactive)
+  (message system-name)
