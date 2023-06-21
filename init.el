@@ -98,7 +98,12 @@
 ;; workon home  to select conda environments with Alt+x pyvenv-workon
 ;; Choosing an conda environment with pyvenv-workon apparently has to to happen before opening the
 ;; console (starting the python process)
-(setenv "WORKON_HOME" "/home/voit/miniconda3/envs/")
+
+
+(if (equal system-name "n-hpc-login1")
+    (setenv "WORKON_HOME" "/home/voit/.conda3/envs/")
+    (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))
+
 
 ;; run line in shell
 (define-key elpy-mode-map (kbd "C-r") 'elpy-shell-send-statement-and-step)
@@ -194,3 +199,6 @@
   "prints host name"
   (interactive)
   (message system-name))
+
+
+
