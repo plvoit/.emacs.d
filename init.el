@@ -137,6 +137,8 @@
 
 (setq dired-hide-details t)
 (setq dired-dwim-target t)      ;;copys to the path of dired in the other window, very helpful for copying to/from server
+(with-eval-after-load "dired"
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
 
 (defun hpc ()
   "Opens the work folder no the HPC by SSH with dired."
@@ -183,6 +185,8 @@
 (global-set-key (kbd "C-c C-p")  'centaur-tabs-backward)
 (global-set-key (kbd "C-c C-n") 'centaur-tabs-forward)
 (setq centaur-tabs-set-icons t)
+(setq centaur-tabs-modified-marker "⬤")
+
 
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
@@ -203,3 +207,4 @@
 
 
 
+(put 'dired-find-alternate-file 'disabled nil)
