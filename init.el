@@ -135,37 +135,44 @@
 ;;To just open the buffer menu in the current window (burying whatever buffer you were in before):
 ;;(global-set-key (kbd "C-x C-b") 'buffer-menu)
 
-(global-set-key (kbd "<f1>") 'menu-bar-open)
+(global-set-key (kbd "<f2>") 'menu-bar-open)
 
 
 ;;===============================================
-;; Folder and Sunrise commander settings
+;; Folder and Double commander settings
 ;;===============================================
 
 (setq dired-hide-details t)
 (setq dired-dwim-target t)      ;;copys to the path of dired in the other window, very helpful for copying to/from server
-(with-eval-after-load "dired"
-  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
+(setq dired-kill-when-opening-new-dired-buffer nil)
+
+(put 'dired-find-alternate-file 'disabled nil)
+;;(with-eval-after-load "dired"
+;;  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
+
+;; from https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer
+;; prevent updir to create a new buffer
+(eval-after-load "dired"
+ ;; don't remove `other-window', the caller expects it to be there
+  '(defun dired-up-directory (&optional other-window)
+    "Run Dired on parent directory of current directory."
+       (interactive "P")
+       (let* ((dir (dired-current-directory))
+       (orig (current-buffer))
+       (up (file-name-directory (directory-file-name dir))))
+       (or (dired-goto-file (directory-file-name dir))
+       ;; Only try dired-goto-subdir if buffer has more than one dir.
+       (and (cdr dired-subdir-alist)
+       (dired-goto-subdir up))
+       (progn
+     	  (kill-buffer orig)
+     	  (dired up)
+     	  (dired-goto-file dir))))))
 
 (defun hpc ()
   "Opens the work folder no the HPC by SSH with dired."
   (interactive)
   (dired "/ssh:voit@login/work/voit"))
-
-;;this could be cool and enable "backspace" to not open a new buffer
-;;dired-kill-when-opening-new-dired-buffer
-;; would have to be disabled when opening DC
-;; (defun double-commander ()
-;;   "Opens two dired windows. Like Double Commander."
-;;   (interactive)
-;;   (if (equal system-name "n-hpc-login1")
-;;       (progn
-;;         (dired "/work/voit")
-;;         (dired-other-window "/work/voit"))
-;;     (progn
-;;       (dired "/home/voit")
-;;       (dired-other-window "/home/voit"))))
-
 
 
 (defun double-commander ()
@@ -173,16 +180,11 @@
  (interactive)
  (if (equal system-name "n-hpc-login1")
      (progn
-	(setq dired-kill-when-opening-new-dired-buffer nil) 
        (dired "/work/voit")
-       (dired-other-window "/work/voit")
-       (setq dired-kill-when-opening-new-dired-buffer t))
+       (dired-other-window "/work/voit"))
      (progn
-       (setq dired-kill-when-opening-new-dired-buffer nil)   	  
        (dired "/home/voit")
-       (dired-other-window "/home/voit")
-       (setq dired-kill-when-opening-new-dired-buffer t))))
-
+       (dired-other-window "/home/voit"))))
 
 
 (defun double-commander-remote ()
@@ -190,8 +192,6 @@
   (interactive)
   (dired "/home/voit")
   (dired-other-window "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
-
-(put 'dired-find-alternate-file 'disabled nil)
 
 
 (global-set-key (kbd "<f8>") 'double-commander)
@@ -203,8 +203,6 @@
    (local-set-key [f7] 'dired-create-directory)
    (local-set-key (kbd "<tab>") 'other-window)
    (local-set-key (kbd "C-b") 'bookmark-jump)
-   (local-set-key (kbd "C-<left>") 'dired-jump-other-window)
-   (local-set-key (kbd "C-<right>") 'dired-jump-other-window)
    (local-set-key (kbd "<DEL>") 'dired-up-directory)))
    ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
    
