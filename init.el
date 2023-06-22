@@ -1,3 +1,4 @@
+
 ;; .emacs.d/init.el
 
 ;; ===================================
@@ -47,6 +48,7 @@
 
 ;; ===================================
 ;; Basic Customization
+
 ;; ===================================
 
 (setq inhibit-startup-message t)    ;; Hide the startup message
@@ -55,6 +57,12 @@
 
 ;; Load the theme of choice:
 (load-theme 'zenburn t)
+
+
+(defun day()
+  "Switches theme to a day theme"
+  (interactive)
+  (load-theme 'sanityinc-tomorrow-day t))
 
 (setq ido-enable-flex-matching t)       ;;ido mode settings
 (setq ido-everywhere t)
@@ -73,7 +81,7 @@
    '("bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "8294b451ffe0575fcccd1a447f56efc94d9560787cd5ff105e620e5f5771427d" default))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
+   '(dired-explorer tab-bar-buffers all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
  '(zoom-mode t nil (zoom)))
 
  
@@ -83,6 +91,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;;===================================================
 ;;IDE Stuff
@@ -115,7 +125,7 @@
 (define-key global-map (kbd "M-j") 'mc/mark-next-like-this-word)
 
 (require 'expand-region)           ;; smart expanding selection of expressions
-(global-set-key (kbd "C-M-W") 'er/expand-region)
+
 
 
 
@@ -128,17 +138,20 @@
 ;;To just open the buffer menu in the current window (burying whatever buffer you were in before):
 ;;(global-set-key (kbd "C-x C-b") 'buffer-menu)
 
-(global-set-key (kbd "<f1>") 'menu-bar-open)
+(global-set-key [F2] 'menu-bar-open)
 
 
 ;;===============================================
-;; Folder and Sunrise commander settings
+;; Folder and DoubleCommander settings
 ;;===============================================
-
+;;(require 'dired-explorer)
 (setq dired-hide-details t)
 (setq dired-dwim-target t)      ;;copys to the path of dired in the other window, very helpful for copying to/from server
-(with-eval-after-load "dired"
-  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
+(put 'dired-find-alternate-file 'disabled nil)
+;;(with-eval-after-load "dired"
+;;  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
+
+(setq dired-kill-when-opening-new-dired-buffer nil)
 
 (defun hpc ()
   "Opens the work folder no the HPC by SSH with dired."
@@ -170,11 +183,13 @@
   (lambda ()
    (local-set-key [f5] 'dired-do-copy)
    (local-set-key [f6] 'dired-do-rename)
+   (local-set-key [f7] 'dired-create-directory)
    (local-set-key (kbd "<tab>") 'other-window)
    (local-set-key (kbd "C-b") 'bookmark-jump)
    (local-set-key (kbd "C-<left>") 'dired-jump-other-window)
    (local-set-key (kbd "C-<right>") 'dired-jump-other-window)
-   (local-set-key (kbd "<DEL>") 'dired-up-directory)))
+   ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file(".."))
+   (local-set-ley (kbd "RET") 'dired-find-alternate-file)))
 
 
 ;;========================================
@@ -204,7 +219,3 @@
   (interactive)
   (find-file "~/.emacs.d/init.el"))
 
-
-
-
-(put 'dired-find-alternate-file 'disabled nil)

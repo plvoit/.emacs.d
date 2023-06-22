@@ -2,7 +2,12 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(("documents"
+(("rp_vs_mm.py"
+ (filename . "~/Radolan/skripte/wei/modify_index/rp_vs_mm.py")
+ (front-context-string . "import yaml\nimpo")
+ (rear-context-string)
+ (position . 1))
+("documents"
  (filename . "~/Documents/")
  (front-context-string . "AcademicWriting_")
  (rear-context-string . "27 Mai 22 09:22 ")
