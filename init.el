@@ -10,6 +10,8 @@
 (add-to-list 'package-archives
             '("melpa" . "https://melpa.org/packages/") t)
 
+(load "~/.emacs.d/elpa/dired-fixups/dired-fixups")
+(require 'dired-fixups)
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")))
@@ -35,7 +37,8 @@
     magit
     centaur-tabs
     all-the-icons              ;;all-the-icons-install-fonts might be needed for the first run (out of emacs)
-    all-the-icons-dired    
+    all-the-icons-dired
+    dired-explorer
     )
   )
 
@@ -92,6 +95,10 @@
   (interactive)
   (load-theme 'sanityinc-tomorrow-day t))
 
+;; tramp tries to compress remote and decompress local. THis messes up python files. Change limits here
+(setq tramp-inline-compress-start-size "20000000") ;;20Mb
+(setq tramp-copy-size-limit "20000000000");; 20GB
+
 ;;===================================================
 ;;IDE Stuff
 ;;===================================================
@@ -142,14 +149,14 @@
 ;;===============================================
 ;; Folder and Double commander settings
 ;;===============================================
-
 (setq dired-hide-details t)
 (setq dired-dwim-target t)      ;;copys to the path of dired in the other window, very helpful for copying to/from server
 (setq dired-kill-when-opening-new-dired-buffer nil)
+(require 'dired-explorer)
+(add-hook 'dired-mode-hook 'dired-explorer-mode)
+(setq dired-explorer-mode t)
 
 (put 'dired-find-alternate-file 'disabled nil)
-;;(with-eval-after-load "dired"
-;;  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file))
 
 ;; from https://www.emacswiki.org/emacs/DiredReuseDirectoryBuffer
 ;; prevent updir to create a new buffer
@@ -205,6 +212,7 @@
    (local-set-key (kbd "<tab>") 'other-window)
    (local-set-key (kbd "C-b") 'bookmark-jump)
    (local-set-key (kbd "<DEL>") 'dired-up-directory)))
+   ;;(local-set-key (kbd "<RET>") 'dired-find-alternate-file))) ;; this command closes the buffer in the other window.... 
    ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
    
 
@@ -238,6 +246,7 @@
 
 
 
+;;========================================
+;; Dired fixups
+;;========================================
 
-
-;;XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
