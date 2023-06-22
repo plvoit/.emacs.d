@@ -151,10 +151,10 @@
 ;;===============================================
 (setq dired-hide-details t)
 (setq dired-dwim-target t)      ;;copys to the path of dired in the other window, very helpful for copying to/from server
-(setq dired-kill-when-opening-new-dired-buffer nil)
+;;(setq dired-kill-when-opening-new-dired-buffer nil)
 (require 'dired-explorer)
 (add-hook 'dired-mode-hook 'dired-explorer-mode)
-(setq dired-explorer-mode t)
+;;(setq dired-explorer-mode t)
 
 (put 'dired-find-alternate-file 'disabled nil)
 
@@ -211,7 +211,8 @@
    (local-set-key [f7] 'dired-create-directory)
    (local-set-key (kbd "<tab>") 'other-window)
    (local-set-key (kbd "C-b") 'bookmark-jump)
-   (local-set-key (kbd "<DEL>") 'dired-up-directory)))
+   (local-set-key (kbd "<DEL>") 'dired-up-directory)
+   (local-set-key (kbd "C-o") 'dired-find-file-other-window)))
    ;;(local-set-key (kbd "<RET>") 'dired-find-alternate-file))) ;; this command closes the buffer in the other window.... 
    ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
    
@@ -220,12 +221,12 @@
 ;;========================================
 ;; Centaur Tabs
 ;;========================================
-(require 'centaur-tabs)
-(centaur-tabs-mode t)
-(global-set-key (kbd "C-c C-p")  'centaur-tabs-backward)
-(global-set-key (kbd "C-c C-n") 'centaur-tabs-forward)
-(setq centaur-tabs-set-icons t)
-(setq centaur-tabs-modified-marker "⬤")
+;; (require 'centaur-tabs)
+;; (centaur-tabs-mode t)
+;; (global-set-key (kbd "C-c C-p")  'centaur-tabs-backward)
+;; (global-set-key (kbd "C-c C-n") 'centaur-tabs-forward)
+;; (setq centaur-tabs-set-icons t)
+;; (setq centaur-tabs-modified-marker "⬤")
 
 
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
