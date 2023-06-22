@@ -193,12 +193,14 @@
 
 (put 'dired-find-alternate-file 'disabled nil)
 
+
 (global-set-key (kbd "<f8>") 'double-commander)
 (global-set-key (kbd "<f9>") 'double-commander-remote)
 (add-hook 'dired-mode-hook
   (lambda ()
    (local-set-key [f5] 'dired-do-copy)
    (local-set-key [f6] 'dired-do-rename)
+   (local-set-key [f7] 'dired-create-directory)
    (local-set-key (kbd "<tab>") 'other-window)
    (local-set-key (kbd "C-b") 'bookmark-jump)
    (local-set-key (kbd "C-<left>") 'dired-jump-other-window)
