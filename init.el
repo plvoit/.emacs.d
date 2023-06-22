@@ -4,7 +4,7 @@
 ;; MELPA Package Support
 ;; ===================================
 ;; Enables basic packaging support
-(require 'package)
+;;equire 'package)
 
 ;; Adds the Melpa archive to the list of available repositories
 (add-to-list 'package-archives
@@ -35,7 +35,6 @@
     color-theme-sanityinc-tomorrow
     flycheck                    ;; syntax check for python, seems to work less buggy than flymake
     magit
-    centaur-tabs
     all-the-icons              ;;all-the-icons-install-fonts might be needed for the first run (out of emacs)
     all-the-icons-dired
     dired-explorer
@@ -98,6 +97,30 @@
 ;; tramp tries to compress remote and decompress local. THis messes up python files. Change limits here
 (setq tramp-inline-compress-start-size "20000000") ;;20Mb
 (setq tramp-copy-size-limit "20000000000");; 20GB
+
+;;===================================================
+;;Tab bars. Taken from https://amitp.blogspot.com/2020/06/emacs-prettier-tab-line.html
+;;===================================================
+(global-tab-line-mode t)
+
+(require 'powerline)
+(defvar my/tab-height 22)
+(defvar my/tab-left (powerline-wave-right 'tab-line nil my/tab-height))
+(defvar my/tab-right (powerline-wave-left nil 'tab-line my/tab-height))
+
+(defun my/tab-line-tab-name-buffer (buffer &optional _buffers)
+  (powerline-render (list my/tab-left
+                          (format " %s  " (buffer-name buffer))
+                          my/tab-right)))
+(setq tab-line-tab-name-function #'my/tab-line-tab-name-buffer)
+(setq tab-line-new-button-show nil)
+(setq tab-line-close-button-show nil)
+
+(set-face-attribute 'tab-line-tab nil ;; active tab in another window
+      :inherit 'tab-line
+      :foreground "gray70" :background "gray90" :box nil)
+(set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
+      :background "#ffd699" :foreground "black" :box nil)
 
 ;;===================================================
 ;;IDE Stuff
