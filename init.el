@@ -60,6 +60,8 @@
 (setq ido-everywhere t)
 (ido-mode 1)
 
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
 ;; Start Emacs in fullscreen mode
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
@@ -83,6 +85,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(defun day ()
+  "Switches to day theme"
+  (interactive)
+  (load-theme 'sanityinc-tomorrow-day t))
 
 ;;===================================================
 ;;IDE Stuff
