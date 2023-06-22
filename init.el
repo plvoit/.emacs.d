@@ -30,6 +30,7 @@
     multiple-cursors                ;; multi editing like PyCharm
     expand-region                   ;; nice expansion of selection like in PyCharm
     zenburn-theme
+    color-theme-sanityinc-tomorrow
     flycheck                    ;; syntax check for python, seems to work less buggy than flymake
     magit
     centaur-tabs
