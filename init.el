@@ -152,16 +152,37 @@
   (interactive)
   (dired "/ssh:voit@login/work/voit"))
 
+;;this could be cool and enable "backspace" to not open a new buffer
+;;dired-kill-when-opening-new-dired-buffer
+;; would have to be disabled when opening DC
+;; (defun double-commander ()
+;;   "Opens two dired windows. Like Double Commander."
+;;   (interactive)
+;;   (if (equal system-name "n-hpc-login1")
+;;       (progn
+;;         (dired "/work/voit")
+;;         (dired-other-window "/work/voit"))
+;;     (progn
+;;       (dired "/home/voit")
+;;       (dired-other-window "/home/voit"))))
+
+
+
 (defun double-commander ()
-  "Opens two dired windows. Like Double Commander."
-  (interactive)
-  (if (equal system-name "n-hpc-login1")
-      (progn
-        (dired "/work/voit")
-        (dired-other-window "/work/voit"))
-    (progn
-      (dired "/home/voit")
-      (dired-other-window "/home/voit"))))
+ "Opens two dired windows. Like Double Commander."
+ (interactive)
+ (if (equal system-name "n-hpc-login1")
+     (progn
+	(setq dired-kill-when-opening-new-dired-buffer nil) 
+       (dired "/work/voit")
+       (dired-other-window "/work/voit")
+       (setq dired-kill-when-opening-new-dired-buffer t))
+     (progn
+       (setq dired-kill-when-opening-new-dired-buffer nil)   	  
+       (dired "/home/voit")
+       (dired-other-window "/home/voit")
+       (setq dired-kill-when-opening-new-dired-buffer t))))
+
 
 
 (defun double-commander-remote ()
@@ -170,6 +191,7 @@
   (dired "/home/voit")
   (dired-other-window "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
 
+(put 'dired-find-alternate-file 'disabled nil)
 
 (global-set-key (kbd "<f8>") 'double-commander)
 (global-set-key (kbd "<f9>") 'double-commander-remote)
@@ -182,6 +204,8 @@
    (local-set-key (kbd "C-<left>") 'dired-jump-other-window)
    (local-set-key (kbd "C-<right>") 'dired-jump-other-window)
    (local-set-key (kbd "<DEL>") 'dired-up-directory)))
+   ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
+   
 
 
 ;;========================================
@@ -214,4 +238,4 @@
 
 
 
-(put 'dired-find-alternate-file 'disabled nil)
+
