@@ -37,7 +37,8 @@
     magit
     all-the-icons              ;;all-the-icons-install-fonts might be needed for the first run (out of emacs)
     all-the-icons-dired
-    dired-explorer
+    dired-explorer  ;;jump to file starting with "keystroke"
+    yafolding     ;;code folding
     )
   )
 
@@ -78,11 +79,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '(default))
+ '(custom-safe-themes '(default))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
+   '(yafolding all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
  '(zoom-mode t nil (zoom)))
 
  
@@ -160,6 +160,11 @@
 (require 'expand-region)           ;; smart expanding selection of expressions
 (global-set-key (kbd "C-M-W") 'er/expand-region)
 
+
+;;code folding based on indentation
+(require 'yafolding)
+(define-key global-map (kbd "C-*") 'yafolding-hide-all)
+(define-key global-map (kbd "C-'") 'yafolding-show-all)
 
 
 ;;===================================================
@@ -263,7 +268,8 @@ Version: 2018-12-23 2022-04-07"
    (local-set-key (kbd "<DEL>") 'dired-up-directory)
    (local-set-key (kbd "C-o") 'dired-find-file-other-window)
    (local-set-key (kbd "C-d") 'dired-do-delete)
-   (local-set-key (kbd "<C-m>") 'dired-mark)
+   (local-set-key (kbd "<C-m>") 'dired-mark)  ;;somehow this special case needs to be in <>, because it conflicts with enter
+   (local-set-key (kbd "C-g") 'revert-buffer)
    (local-set-key (kbd "C-M-s") 'xah-dired-sort)))
    ;;(local-set-key (kbd "<RET>") 'dired-find-file)))
    ;;(local-set-key (kbd "<RET>") 'dired-find-alternate-file))) ;; this command closes the buffer in the other window.... 
