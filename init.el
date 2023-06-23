@@ -57,6 +57,9 @@
 (global-linum-mode t)               ;; Enable line numbers globally
 
 
+;;C-m is the same as Enter, this changes it. From https://emacs.stackexchange.com/questions/20240/how-to-distinguish-c-m-from-return
+(define-key input-decode-map [?\C-m] [C-m])
+
 ;; Load the theme of choice:
 (load-theme 'zenburn t)
 
@@ -177,9 +180,30 @@
 (setq dired-hide-details t)
 (setq dired-dwim-target t)      ;;copys to the path of dired in the other window, very helpful for copying to/from server
 ;;(setq dired-kill-when-opening-new-dired-buffer nil)
+
+;;show file size in Megabyte
+(setq dired-listing-switches "-lhaG")
+
 (require 'dired-explorer)
 (add-hook 'dired-mode-hook 'dired-explorer-mode)
-;;(setq dired-explorer-mode t)
+
+;; sorting function from http://xahlee.info/emacs/emacs/dired_sort.html
+(defun xah-dired-sort ()
+  "Sort dired dir listing in different ways.
+Prompt for a choice.
+URL `http://xahlee.info/emacs/emacs/dired_sort.html'
+Version: 2018-12-23 2022-04-07"
+  (interactive)
+  (let (xsortBy xarg)
+    (setq xsortBy (completing-read "Sort by:" '( "date" "size" "name" )))
+    (cond
+     ((equal xsortBy "name") (setq xarg "-Al "))
+     ((equal xsortBy "date") (setq xarg "-Al -t"))
+     ((equal xsortBy "size") (setq xarg "-Al -S"))
+     ((equal xsortBy "dir") (setq xarg "-Al --group-directories-first"))
+     (t (error "logic error 09535" )))
+    (dired-sort-other xarg )))
+
 
 (put 'dired-find-alternate-file 'disabled nil)
 
@@ -237,7 +261,11 @@
    (local-set-key (kbd "<tab>") 'other-window)
    (local-set-key (kbd "C-b") 'bookmark-jump)
    (local-set-key (kbd "<DEL>") 'dired-up-directory)
-   (local-set-key (kbd "C-o") 'dired-find-file-other-window)))
+   (local-set-key (kbd "C-o") 'dired-find-file-other-window)
+   (local-set-key (kbd "C-d") 'dired-do-delete)
+   (local-set-key (kbd "<C-m>") 'dired-mark)
+   (local-set-key (kbd "C-M-s") 'xah-dired-sort)))
+   ;;(local-set-key (kbd "<RET>") 'dired-find-file)))
    ;;(local-set-key (kbd "<RET>") 'dired-find-alternate-file))) ;; this command closes the buffer in the other window.... 
    ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
    
