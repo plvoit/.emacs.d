@@ -70,6 +70,7 @@
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
+
 ;; Start Emacs in fullscreen mode
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
@@ -103,6 +104,7 @@
 (setq tramp-copy-size-limit "20000000000");; 20GB
 
 (global-set-key (kbd "C-j") 'set-rectangular-region-anchor) ;;multiple cursors
+(global-set-key (kbd "<f10>") 'shell ) ;;open shell
 ;;===================================================
 ;;Tab bars. Taken from https://amitp.blogspot.com/2020/06/emacs-prettier-tab-line.html
 ;;===================================================
@@ -167,6 +169,10 @@
 (define-key global-map (kbd "C-'") 'yafolding-show-all)
 
 
+(custom-set-variables
+ '(zoom-ignored-major-modes '(python-mode)))
+
+(setq eldoc-mode nil)
 ;;===================================================
 ;; Buffer and windows
 ;;===================================================
@@ -310,3 +316,15 @@ Version: 2018-12-23 2022-04-07"
 ;; Dired fixups
 ;;========================================
 
+;; chat gpt version of defining split ratios for python mode doesnt work
+;; (defun set-split-ratio ()
+  ;; "Set  split screen window ratio for specific major modes."
+  ;; (let ((mode (symbol-name major-mode)))
+  ;;   (cond
+  ;;    ((string-equal mode "python-mode")
+  ;;     (setq-local split-height-threshold 20)
+  ;;     (setq-local split-width-threshold 80)) 
+  ;;   ;; Add more major modes and their corresponding settings here
+  ;;    )))
+
+;;(add-hook 'after-change-major-mode-hook 'set-split-ratio)
