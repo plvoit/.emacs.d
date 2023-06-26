@@ -10,8 +10,8 @@
 (add-to-list 'package-archives
             '("melpa" . "https://melpa.org/packages/") t)
 
-(load "~/.emacs.d/elpa/dired-fixups/dired-fixups")
-(require 'dired-fixups)
+;;(load "~/.emacs.d/elpa/dired-fixups/dired-fixups") dont know how to get this work
+;;(require 'dired-fixups)
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")))
