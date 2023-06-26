@@ -107,6 +107,9 @@
 
 (global-set-key (kbd "C-j") 'set-rectangular-region-anchor) ;;multiple cursors
 (global-set-key (kbd "<f10>") 'shell ) ;;open shell
+
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally) 
 ;;===================================================
 ;;Tab bars. Taken from https://amitp.blogspot.com/2020/06/emacs-prettier-tab-line.html
 ;;===================================================
@@ -136,6 +139,11 @@
 ;;===================================================
 
 (elpy-enable)
+
+;;(add-hook 'elpy-mode-hook 'zoom-mode) ;;not very elegant. Does zoom mode stay switched off?
+(add-hook 'elpy-mode-hook
+          (lambda ()
+            (zoom-mode -1)))
 
 ;;exchange flymake to the more modern flycheck
 (when (load "flycheck" t t)
@@ -175,6 +183,7 @@
  '(zoom-ignored-major-modes '(python-mode)))
 
 (setq eldoc-mode nil)
+
 ;;===================================================
 ;; Buffer and windows
 ;;===================================================
@@ -262,7 +271,6 @@ Version: 2018-12-23 2022-04-07"
   (interactive)
   (dired "/home/voit")
   (dired-other-window "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
-
 
 (global-set-key (kbd "<f8>") 'double-commander)
 (global-set-key (kbd "<f9>") 'double-commander-remote)
