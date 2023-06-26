@@ -59,7 +59,9 @@
 
 
 ;;C-m is the same as Enter, this changes it. From https://emacs.stackexchange.com/questions/20240/how-to-distinguish-c-m-from-return
-(define-key input-decode-map [?\C-m] [C-m])
+
+(if (equal system-name "GK-NB-14.ad.umwelt.uni-potsdam.de")
+    (define-key input-decode-map [?\C-m] [C-m]))
 
 ;; Load the theme of choice:
 (load-theme 'zenburn t)
