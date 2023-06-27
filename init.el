@@ -54,7 +54,7 @@
 ;; ===================================
 
 (setq inhibit-startup-message t)    ;; Hide the startup message
-
+(setq menu-bar-mode nil)
 (global-linum-mode t)               ;; Enable line numbers globally
 
 
