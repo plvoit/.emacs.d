@@ -182,6 +182,28 @@
 (custom-set-variables
  '(zoom-ignored-major-modes '(python-mode)))
 
+;;try to control postition and size of Python Shell
+;; from https://www.masteringemacs.org/article/demystifying-emacs-window-manager
+;; places python shell at bottom, and small
+(add-to-list 'display-buffer-alist
+  '("*Python*" display-buffer-in-direction
+    (direction . bottom)
+    (window . root)
+    (window-height . 0.3)))
+
+;;this should place a fixed sidebar, but at least in Elpy this doesn't really work
+;; left, top, right, bottom
+;; (setq window-sides-slots '(0 0 1 0))
+
+;; (add-to-list 'display-buffer-alist
+;;           `("*Python*"
+;;             display-buffer-in-side-window
+;;             (side . right)
+;;             (slot . 0)
+;;             (window-parameters . ((no-delete-other-windows . t)))
+;;             (window-width . 5)))
+
+
 (setq eldoc-mode nil)
 
 ;;===================================================
@@ -323,25 +345,5 @@ Version: 2018-12-23 2022-04-07"
 
 
 
-;;========================================
-;; Dired fixups
-;;========================================
 
-;; chat gpt version of defining split ratios for python mode doesnt work
-;; (defun set-split-ratio ()
-  ;; "Set  split screen window ratio for specific major modes."
-  ;; (let ((mode (symbol-name major-mode)))
-  ;;   (cond
-  ;;    ((string-equal mode "python-mode")
-  ;;     (setq-local split-height-threshold 20)
-  ;;     (setq-local split-width-threshold 80)) 
-  ;;   ;; Add more major modes and their corresponding settings here
-  ;;    )))
-
-;;(add-hook 'after-change-major-mode-hook 'set-split-ratio)
-
-(add-to-list 'display-buffer-alist
-  '("\\*Python\\*" display-buffer-in-direction
-    (direction . bottom)
-    (window . root)
-    (window-height . 0.1)))
+    
