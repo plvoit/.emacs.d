@@ -56,7 +56,7 @@
 (setq inhibit-startup-message t)    ;; Hide the startup message
 (menu-bar-mode -1)
 (global-linum-mode t)               ;; Enable line numbers globally
-
+(tool-bar-mode -1)                  ;; disable toolbar in GUI
 
 ;;C-m is the same as Enter, this changes it. From https://emacs.stackexchange.com/questions/20240/how-to-distinguish-c-m-from-return
 
@@ -85,7 +85,8 @@
  '(custom-safe-themes '(default))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(yafolding all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
+   '(auctex yafolding all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
+ '(zoom-ignored-major-modes '(python-mode))
  '(zoom-mode t nil (zoom)))
 
  
@@ -179,8 +180,7 @@
 (define-key global-map (kbd "C-'") 'yafolding-show-all)
 
 
-(custom-set-variables
- '(zoom-ignored-major-modes '(python-mode)))
+
 
 ;;try to control postition and size of Python Shell
 ;; from https://www.masteringemacs.org/article/demystifying-emacs-window-manager
