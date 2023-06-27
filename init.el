@@ -223,6 +223,7 @@ Version: 2018-12-23 2022-04-07"
      ((equal xsortBy "date") (setq xarg "-Al -t"))
      ((equal xsortBy "size") (setq xarg "-Al -S"))
      ((equal xsortBy "dir") (setq xarg "-Al --group-directories-first"))
+     ((equal xsortBy "ext") (setq xarg "-Al -X"))
      (t (error "logic error 09535" )))
     (dired-sort-other xarg )))
 
@@ -338,3 +339,9 @@ Version: 2018-12-23 2022-04-07"
   ;;    )))
 
 ;;(add-hook 'after-change-major-mode-hook 'set-split-ratio)
+
+(add-to-list 'display-buffer-alist
+  '("\\*Python\\*" display-buffer-in-direction
+    (direction . bottom)
+    (window . root)
+    (window-height . 0.1)))
