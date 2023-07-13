@@ -41,6 +41,7 @@
     yafolding     ;;code folding
     reftex
     auctex
+    shackle ;; set window sizes for major modes. E.g., for Python mode
     )
   )
 
@@ -74,6 +75,7 @@
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;; Start Emacs in fullscreen mode
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -148,6 +150,9 @@
 (add-hook 'elpy-mode-hook
           (lambda ()
             (zoom-mode -1)))
+
+;;(require 'shackle)   ;; doesnt seem to work
+;;(setq shackle-rules '(("*Python*" :align bottom :size 0.25)))
 
 ;; switch off auto documentation because it's annoying
 (eldoc-mode -1)
