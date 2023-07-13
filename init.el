@@ -135,6 +135,7 @@
 (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
       :background "#ffd699" :foreground "black" :box nil)
 
+(desktop-save-mode 1)
 ;;===================================================
 ;;IDE Stuff
 ;;===================================================
@@ -145,6 +146,9 @@
 (add-hook 'elpy-mode-hook
           (lambda ()
             (zoom-mode -1)))
+
+;; switch off auto documentation because it's annoying
+(eldoc-mode -1)
 
 ;;exchange flymake to the more modern flycheck
 (when (load "flycheck" t t)
@@ -203,8 +207,6 @@
 ;;             (window-parameters . ((no-delete-other-windows . t)))
 ;;             (window-width . 5)))
 
-
-(setq eldoc-mode nil)
 
 ;;===================================================
 ;; Buffer and windows
@@ -343,7 +345,3 @@ Version: 2018-12-23 2022-04-07"
   (interactive)
   (find-file "~/.emacs.d/init.el"))
 
-
-
-
-    
