@@ -39,6 +39,8 @@
     all-the-icons-dired
     dired-explorer  ;;jump to file starting with "keystroke"
     yafolding     ;;code folding
+    reftex
+    auctex
     )
   )
 
@@ -344,6 +346,16 @@ Version: 2018-12-23 2022-04-07"
   (find-file "~/.emacs.d/init.el"))
 
 
-
-
+;;========================================
+;; Latex
+;;========================================
+;; Turn on RefTeX in AUCTeX
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+;; Activate nice interface between RefTeX and AUCTeX
+(setq reftex-plug-into-AUCTeX t)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(add-hook 'LaTeX-mode-hook
+      (lambda()
+        (local-set-key [C-tab] 'TeX-complete-symbol)))
     
