@@ -45,6 +45,9 @@
     doom-modeline
     dashboard
     guru-mode
+    popper
+    company
+    mini-frame
     )
   )
 
@@ -65,6 +68,16 @@
 (tool-bar-mode -1)                  ;; disable toolbar in GUI
 (fset 'yes-or-no-p 'y-or-n-p)
 (scroll-bar-mode -1)  ;; No visual indicator pleaser
+;; make tab key always call a indent command.
+(setq-default tab-always-indent t)
+;; make tab key do indent first then completion.
+(setq-default tab-always-indent 'complete)
+
+;;show minibuffer on the top
+(require 'mini-frame)
+(setq mini-frame-mode 1) ;; Todo: doesnt work and disable company dictionnary
+
+
 
 (tooltip-mode nil)
 (setq show-help-function nil)
@@ -144,6 +157,36 @@ Prompt only if there are unsaved changes."
 ;; It respects `doom-modeline-icon' and `doom-modeline-buffer-state-icon'.
 (setq doom-modeline-buffer-modification-icon t)
 
+;; ===================================
+;; Popper Windows
+;; ===================================
+
+(setq popper-reference-buffers
+      '("\\*Messages\\*"
+        "Output\\*$"
+        "\\*Async Shell Command\\*"
+        "\\*Python\\*"
+	help-mode
+        compilation-mode))
+
+;; Match eshell, shell, term and/or vterm buffers
+(setq popper-reference-buffers
+      (append popper-reference-buffers
+              '("^\\*eshell.*\\*$" eshell-mode ;eshell as a popup
+                "^\\*shell.*\\*$"  shell-mode  ;shell as a popup
+                "^\\*term.*\\*$"   term-mode   ;term as a popup
+                "^\\*vterm.*\\*$"  vterm-mode  ;vterm as a popup
+                )))
+
+(global-set-key (kbd "C-o") 'popper-toggle-latest)  
+(global-set-key (kbd "M-o") 'popper-cycle)
+(global-set-key (kbd "C-M-`") 'popper-toggle-type)
+(popper-mode +1)
+
+;; For echo-area hints
+(require 'popper-echo)
+(popper-echo-mode +1)
+
 ;;C-m is the same as Enter, this changes it. From https://emacs.stackexchange.com/questions/20240/how-to-distinguish-c-m-from-return
 
 (if (equal system-name "GK-NB-14.ad.umwelt.uni-potsdam.de")
@@ -158,7 +201,14 @@ Prompt only if there are unsaved changes."
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
+;; Auto-complete
+(require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
+(define-key company-mode-map (kbd "C-<tab>") 'company-complete)
+;;(define-key company-mode-map [remap indent-for-tab-command] #'company-indent-or-complete-common)
+
+;;(add-to-list 'company-backends '(company-jedi)) ;;doesnt work
+
 
 ;; Start Emacs in fullscreen mode
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -259,6 +309,9 @@ Prompt only if there are unsaved changes."
 
 ;; run line in shell
 (define-key elpy-mode-map (kbd "C-r") 'elpy-shell-send-statement-and-step)
+(setq elpy-company-add-completion-from-shell t)
+;;(setq elpy-shell-use-project-root nil)
+(setq elpy-shell-display-buffer-after-send t)
 
 ;; always highlight matching parenthesis
 (show-paren-mode 1)
