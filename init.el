@@ -80,8 +80,8 @@
 
 ;;show minibuffer on the top
 ;;(require 'mini-frame)
-;;(mini-frame-mode 1) ;; Todo: doesnt work and disable company dictionary
-(setq-default header-line-format mode-line-format) ; Copy mode-line
+;;(mini-frame-mode 1) ;; Todo: disable company dictionary
+(setq-default header-line-format mode-line-format) ; Copy mode-line this seems to work but maybe the info and help can now not be seen anymore
 (setq-default mode-line-format nil) ; Remove mode-liney
 
 
