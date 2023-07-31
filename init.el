@@ -67,7 +67,12 @@
 (global-linum-mode t)               ;; Enable line numbers globally
 (tool-bar-mode -1)                  ;; disable toolbar in GUI
 (fset 'yes-or-no-p 'y-or-n-p)
-(scroll-bar-mode -1)  ;; No visual indicator pleaser
+
+;;(if (equal system-name "n-hpc-login1")
+;;    (scroll-bar-mode -1))  ;; No visual indicator pleaser)
+(if (display-graphic-p)
+    (scroll-bar-mode -1))    
+
 ;; make tab key always call a indent command.
 (setq-default tab-always-indent t)
 ;; make tab key do indent first then completion.
@@ -303,6 +308,7 @@ Prompt only if there are unsaved changes."
 (if (equal system-name "n-hpc-login1")
     (setenv "WORKON_HOME" "/home/voit/.conda/envs/")
     (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))
+
 
 
 ;; run line in shell
