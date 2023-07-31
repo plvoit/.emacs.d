@@ -44,6 +44,7 @@
     shackle ;; set window sizes for major modes. E.g., for Python mode
     doom-modeline
     dashboard
+    guru-mode
     )
   )
 
@@ -65,8 +66,37 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (scroll-bar-mode -1)  ;; No visual indicator pleaser
 
+(tooltip-mode nil)
+(setq show-help-function nil)
+
 ;; Automatically kill all active processes when closing Emacs
 (setq confirm-kill-processes nil)
+
+;;Let's extend the standard C-x k with prefix support, so that we can invoke variations: Kill this buffer, kill other buffer, or kill all other buffers.
+;;By default C-x k prompts to select which buffer should be selected. I almost always want to kill the current buffer, so let's not waste time making such
+;;a tedious decision. Moreover, if I've killed a buffer, I usually also don't want the residual window, so let's get rid of it.
+
+(global-set-key (kbd "C-x k")
+  (lambda (&optional prefix)
+"C-x k     ⇒ Kill current buffer & window
+C-u C-x k ⇒ Kill OTHER window and its buffer
+C-u C-u C-x C-k ⇒ Kill all other buffers and windows
+
+Prompt only if there are unsaved changes."
+     (interactive "P")
+     (pcase (or (car prefix) 0)
+       ;; C-x k     ⇒ Kill current buffer & window
+       (0  (kill-this-buffer)
+           (unless (one-window-p) (delete-window)))
+       ;; C-u C-x k ⇒ Kill OTHER window and its buffer
+       (4  (other-window 1)
+           (kill-this-buffer)
+           (unless (one-window-p) (delete-window)))
+       ;; C-u C-u C-x C-k ⇒ Kill all other buffers and windows
+       (16   (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
+             (delete-other-windows)))))
+
+(guru-global-mode +1)
 ;; ===================================
 ;; Dashboard
 ;; ===================================
