@@ -79,8 +79,11 @@
 (setq-default tab-always-indent 'complete)
 
 ;;show minibuffer on the top
-(require 'mini-frame)
-(mini-frame-mode 1) ;; Todo: doesnt work and disable company dictionary
+;;(require 'mini-frame)
+;;(mini-frame-mode 1) ;; Todo: doesnt work and disable company dictionary
+(setq-default header-line-format mode-line-format) ; Copy mode-line
+(setq-default mode-line-format nil) ; Remove mode-liney
+
 
 (tooltip-mode nil)
 (setq show-help-function nil)
