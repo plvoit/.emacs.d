@@ -75,9 +75,7 @@
 
 ;;show minibuffer on the top
 (require 'mini-frame)
-(setq mini-frame-mode 1) ;; Todo: doesnt work and disable company dictionnary
-
-
+(mini-frame-mode 1) ;; Todo: doesnt work and disable company dictionary
 
 (tooltip-mode nil)
 (setq show-help-function nil)
@@ -199,7 +197,7 @@ Prompt only if there are unsaved changes."
 (setq ido-everywhere t)
 (ido-mode 1)
 
-(add-hook 'after-init-hook #'global-flycheck-mode)
+;;(add-hook 'after-init-hook #'global-frame-mode)
 
 ;; Auto-complete
 (require 'company)
