@@ -42,6 +42,8 @@
     reftex
     auctex
     shackle ;; set window sizes for major modes. E.g., for Python mode
+    doom-modeline
+    dashboard
     )
   )
 
@@ -60,6 +62,57 @@
 (menu-bar-mode -1)
 (global-linum-mode t)               ;; Enable line numbers globally
 (tool-bar-mode -1)                  ;; disable toolbar in GUI
+(fset 'yes-or-no-p 'y-or-n-p)
+(scroll-bar-mode -1)  ;; No visual indicator pleaser
+
+;; Automatically kill all active processes when closing Emacs
+(setq confirm-kill-processes nil)
+;; ===================================
+;; Dashboard
+;; ===================================
+
+(require 'dashboard)
+(dashboard-setup-startup-hook)
+;; Set the title
+(setq dashboard-banner-logo-title "Dashboard")
+;; Set the banner
+(setq dashboard-startup-banner 'logo)
+;; Value can be
+;; - nil to display no banner
+;; - 'official which displays the official emacs logo
+;; - 'logo which displays an alternative emacs logo
+;; - 1, 2 or 3 which displays one of the text banners
+;; - "path/to/your/image.gif", "path/to/your/image.png" or "path/to/your/text.txt" which displays whatever gif/image/text you would prefer
+;; - a cons of '("path/to/your/image.png" . "path/to/your/text.txt")
+
+;; Content is not centered by default. To center, set
+(setq dashboard-center-content t)
+(setq dashboard-icon-type 'all-the-icons) ;; use `all-the-icons' package
+
+(setq dashboard-set-file-icons t)
+(setq dashboard-set-footer nil)
+
+
+(require 'doom-modeline)
+(doom-modeline-mode 1)
+
+;; Whether display icons in the mode-line.
+;; While using the server mode in GUI, should set the value explicitly.
+(setq doom-modeline-icon nil)
+
+;; Whether display the icon for `major-mode'. It respects `doom-modeline-icon'.
+(setq doom-modeline-major-mode-icon nil)
+
+;; Whether display the colorful icon for `major-mode'.
+;; It respects `nerdg-icons-color-icons'.
+(setq doom-modeline-major-mode-color-icon nil)
+
+;; Whether display the icon for the buffer state. It respects `doom-modeline-icon'.
+(setq doom-modeline-buffer-state-icon nil)
+
+;; Whether display the modification icon for the buffer.
+;; It respects `doom-modeline-icon' and `doom-modeline-buffer-state-icon'.
+(setq doom-modeline-buffer-modification-icon t)
 
 ;;C-m is the same as Enter, this changes it. From https://emacs.stackexchange.com/questions/20240/how-to-distinguish-c-m-from-return
 
@@ -69,13 +122,14 @@
 ;; Load the theme of choice:
 (load-theme 'zenburn t)
 
-(setq ido-enable-flex-matching t)       ;;ido mode settings
+(setq ido-enable-flex-matching t)    ;;ido mode settings
 (setq ido-everywhere t)
 (ido-mode 1)
 
 (add-hook 'after-init-hook #'global-flycheck-mode)
 
 (add-hook 'after-init-hook 'global-company-mode)
+
 ;; Start Emacs in fullscreen mode
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
@@ -88,7 +142,7 @@
  '(custom-safe-themes '(default))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(auctex yafolding all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
+   '(## auctex yafolding all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
  '(zoom-ignored-major-modes '(python-mode))
  '(zoom-mode t nil (zoom)))
 
@@ -113,7 +167,9 @@
 (global-set-key (kbd "<f10>") 'shell ) ;;open shell
 
 (global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
-(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally) 
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+
+
 ;;===================================================
 ;;Tab bars. Taken from https://amitp.blogspot.com/2020/06/emacs-prettier-tab-line.html
 ;;===================================================
@@ -232,6 +288,9 @@
 (setq dired-hide-details t)
 (setq dired-dwim-target t)      ;;copys to the path of dired in the other window, very helpful for copying to/from server
 ;;(setq dired-kill-when-opening-new-dired-buffer nil)
+
+(setq dired-auto-revert-buffer 1) ;;update the file view
+(add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode 1))) ;;hide details
 
 ;;show file size in Megabyte
 (setq dired-listing-switches "-lhaG")
