@@ -45,7 +45,9 @@
 
   ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete))
+  ;;  (setq tab-always-indent 'complete))
+  ;;changed this so I could use tab for indents in python mode
+  (setq tab-always-indent t))
 
 ;; Optionally use the `orderless' completion style.
 (use-package orderless
