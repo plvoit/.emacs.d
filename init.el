@@ -608,10 +608,10 @@ Version: 2018-12-23 2022-04-07"
   :hook ((after-init . global-corfu-mode)
          (global-corfu-mode . corfu-popupinfo-mode)))
 
-(unless (display-graphic-p)
-  (use-package corfu-terminal
+;;(unless (display-graphic-p)
+;;  (use-package corfu-terminal
 
-:hook (global-corfu-mode . corfu-terminal-mode)))
+;;:hook (global-corfu-mode . corfu-terminal-mode)))
 
 ;; Add extensions
 (use-package cape
