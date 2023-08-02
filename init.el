@@ -127,6 +127,13 @@ Otherwise the startup will be very slow."
 ;; Basic Customization
 ;; ===================================
 
+(add-hook 'term-setup-hook
+  (lambda ()
+    (define-key function-key-map "\e[1;5A" [M-up])
+    (define-key function-key-map "\e[1;5B" [M-down])
+    (define-key function-key-map "\e[1;5C" [M-right])
+    (define-key function-key-map "\e[1;5D" [M-left])))
+
 (setq inhibit-startup-message t)    ;; Hide the startup message
 (menu-bar-mode -1)
 (global-linum-mode t)               ;; Enable line numbers globally

@@ -1,4 +1,4 @@
-;;
+;;    taken from centaur.emacs
 ;;; init-completion.el --- Initialize completion configurations.	-*- lexical-binding: t -*-
 
 ;; Copyright (C) 2016-2023 Vincent Zhang
