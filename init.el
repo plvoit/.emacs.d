@@ -4,20 +4,71 @@
 ;; MELPA Package Support
 ;; ===================================
 ;; Enables basic packaging support
-;;equire 'package)
+(require 'package)
+
+;; Speed up startup
+;;
+
+;; Defer garbage collection further back in the startup process
+(setq gc-cons-threshold most-positive-fixnum)
+
+;; Prevent flashing of unstyled modeline at startup
+(setq-default mode-line-format nil)
+
+;; Don't pass case-insensitive to `auto-mode-alist'
+(setq auto-mode-case-fold nil)
+
+(unless (or (daemonp) noninteractive init-file-debug)
+  ;; Suppress file handlers operations at startup
+  ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
+  (let ((old-value file-name-handler-alist))
+    (setq file-name-handler-alist nil)
+    (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
+    (add-hook 'emacs-startup-hook
+              (lambda ()
+                "Recover file name handlers."
+                (setq file-name-handler-alist
+                      (delete-dups (append file-name-handler-alist old-value))))
+              101)))
+
+;; Load path
+;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
+(defun update-load-path (&rest _)
+  "Update `load-path'."
+  (dolist (dir '("site-lisp" "lisp"))
+    (push (expand-file-name dir user-emacs-directory) load-path)))
+
+(defun add-subdirs-to-load-path (&rest _)
+  "Add subdirectories to `load-path'.
+
+Don't put large files in `site-lisp' directory, e.g. EAF.
+Otherwise the startup will be very slow."
+  (let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
+    (normal-top-level-add-subdirs-to-load-path)))
+
+(advice-add #'package-initialize :after #'update-load-path)
+(advice-add #'package-initialize :after #'add-subdirs-to-load-path)
+
+
+
+(update-load-path)
 
 ;; Adds the Melpa archive to the list of available repositories
 (add-to-list 'package-archives
             '("melpa" . "https://melpa.org/packages/") t)
 
-;;(load "~/.emacs.d/elpa/dired-fixups/dired-fixups") dont know how to get this work
-;;(require 'dired-fixups)
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")
         ("melpa" . "https://melpa.org/packages/")))
 
 ;; Initializes the package infrastructure
 (package-initialize)
+
+
+(eval-and-compile
+  (setq use-package-always-ensure t
+        use-package-expand-minimally t))
+
 ;;(package-refresh-contents) ;; needed if packages are sometimes not installed properly
 
 ;; Installs packages
@@ -48,6 +99,19 @@
     popper
     company
     mini-frame
+    corfu
+    cape
+    use-package
+    emacs
+    marginalia
+    vertico
+    orderless
+    vertico-posframe
+    consult
+    consult-flyspell
+    embark
+    embark-consult
+
     )
   )
 
@@ -67,7 +131,7 @@
 (global-linum-mode t)               ;; Enable line numbers globally
 (tool-bar-mode -1)                  ;; disable toolbar in GUI
 (fset 'yes-or-no-p 'y-or-n-p)
-
+(setq ring-bell-function 'ignore)
 ;;(if (equal system-name "n-hpc-login1")
 ;;    (scroll-bar-mode -1))  ;; No visual indicator pleaser)
 (if (display-graphic-p)
@@ -77,12 +141,6 @@
 (setq-default tab-always-indent t)
 ;; make tab key do indent first then completion.
 (setq-default tab-always-indent 'complete)
-
-;;show minibuffer on the top
-;;(require 'mini-frame)
-;;(mini-frame-mode 1) ;; Todo: disable company dictionary
-(setq-default header-line-format mode-line-format) ; Copy mode-line this seems to work but maybe the info and help can now not be seen anymore
-(setq-default mode-line-format nil) ; Remove mode-liney
 
 
 (tooltip-mode nil)
@@ -116,6 +174,7 @@ Prompt only if there are unsaved changes."
              (delete-other-windows)))))
 
 (guru-global-mode +1)
+
 ;; ===================================
 ;; Dashboard
 ;; ===================================
@@ -141,6 +200,10 @@ Prompt only if there are unsaved changes."
 (setq dashboard-set-file-icons t)
 (setq dashboard-set-footer nil)
 
+;; ===================================
+;; Doom Modeline
+;; ===================================
+
 
 (require 'doom-modeline)
 (doom-modeline-mode 1)
@@ -162,6 +225,14 @@ Prompt only if there are unsaved changes."
 ;; Whether display the modification icon for the buffer.
 ;; It respects `doom-modeline-icon' and `doom-modeline-buffer-state-icon'.
 (setq doom-modeline-buffer-modification-icon t)
+
+
+;;show minibuffer on the top
+;;(require 'mini-frame)
+;;(mini-frame-mode 1) ;; Todo: disable company dictionary
+;;(setq-default header-line-format mode-line-format) ; Copy mode-line this seems to work but maybe the info and help can now not be seen anymore
+;;(setq-default mode-line-format nil) ; Remove mode-liney
+
 
 ;; ===================================
 ;; Popper Windows
@@ -201,16 +272,16 @@ Prompt only if there are unsaved changes."
 ;; Load the theme of choice:
 (load-theme 'zenburn t)
 
-(setq ido-enable-flex-matching t)    ;;ido mode settings
-(setq ido-everywhere t)
-(ido-mode 1)
+;;(setq ido-enable-flex-matching t)    ;;ido mode settings
+;;(setq ido-everywhere t)
+;;(ido-mode 1)
 
 ;;(add-hook 'after-init-hook #'global-frame-mode)
 
 ;; Auto-complete
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-(define-key company-mode-map (kbd "C-<tab>") 'company-complete)
+;;(require 'company)
+;;(add-hook 'after-init-hook 'global-company-mode)
+;;(define-key company-mode-map (kbd "C-<tab>") 'company-complete)
 ;;(define-key company-mode-map [remap indent-for-tab-command] #'company-indent-or-complete-common)
 
 ;;(add-to-list 'company-backends '(company-jedi)) ;;doesnt work
@@ -334,8 +405,6 @@ Prompt only if there are unsaved changes."
 (require 'yafolding)
 (define-key global-map (kbd "C-*") 'yafolding-hide-all)
 (define-key global-map (kbd "C-'") 'yafolding-show-all)
-
-
 
 
 ;;try to control postition and size of Python Shell
@@ -513,4 +582,52 @@ Version: 2018-12-23 2022-04-07"
 (add-hook 'LaTeX-mode-hook
       (lambda()
         (local-set-key [C-tab] 'TeX-complete-symbol)))
+
+
+;;=======================================
+;;Corfu auto complete
+;;=======================================
+(use-package corfu
+  :custom
+  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-auto-prefix 2)          ;; Trigger auto completion with 2 chars
+  (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
+  (corfu-quit-no-match t)        ;; Automatically quit if there is no match
+  (corfu-preview-current nil)    ;; Disable current candidate preview
+  (corfu-preselect 'prompt)      ;; Preselect the prompt
+  (corfu-scroll-margin 5)        ;; Use scroll margin
+  :bind ("M-/" . completion-at-point)
+  :hook ((after-init . global-corfu-mode)
+         (global-corfu-mode . corfu-popupinfo-mode)))
+
+(unless (display-graphic-p)
+  (use-package corfu-terminal
+
+:hook (global-corfu-mode . corfu-terminal-mode)))
+
+;; Add extensions
+(use-package cape
+  :init
+  (setq cape-dict-case-fold t)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  ;; (add-to-list 'completion-at-point-functions #'cape-tex)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev))  
+
+
     
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages '(use-package corfu cape better-defaults)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(require 'init-completion)
