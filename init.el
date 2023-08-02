@@ -18,7 +18,7 @@
 ;; Don't pass case-insensitive to `auto-mode-alist'
 (setq auto-mode-case-fold nil)
 
-
+;;
 ;; (unless (or (daemonp) noninteractive init-file-debug)
 ;;   ;; Suppress file handlers operations at startup
 ;;   ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
