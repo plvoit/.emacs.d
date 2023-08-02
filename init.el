@@ -129,10 +129,10 @@ Otherwise the startup will be very slow."
 
 (add-hook 'term-setup-hook
   (lambda ()
-    (define-key function-key-map "\e[1;5A" [M-up])
-    (define-key function-key-map "\e[1;5B" [M-down])
-    (define-key function-key-map "\e[1;5C" [M-right])
-    (define-key function-key-map "\e[1;5D" [M-left])))
+    (define-key function-key-map "\e[1;5A" [up])
+    (define-key function-key-map "\e[1;5B" [down])
+    (define-key function-key-map "\e[1;5C" [right])
+    (define-key function-key-map "\e[1;5D" [left])))
 
 (setq inhibit-startup-message t)    ;; Hide the startup message
 (menu-bar-mode -1)
