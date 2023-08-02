@@ -404,7 +404,7 @@ Prompt only if there are unsaved changes."
 
 ;; TAB is used for corfu Auto-complete so it needs to be redefined
 (setq-default tab-width 4)
-(define-key elpy-mode-map (kbd "<tab>") 'python-indent-shift-right)
+(define-key elpy-mode-map (kbd "TAB") 'python-indent-shift-right)
 (define-key elpy-mode-map (kbd "<S-tab>") 'python-indent-shift-lefty)
 ;; run line in shell
 (define-key elpy-mode-map (kbd "C-r") 'elpy-shell-send-statement-and-step)
