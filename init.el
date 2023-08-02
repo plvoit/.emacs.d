@@ -397,7 +397,17 @@ Prompt only if there are unsaved changes."
 (define-key elpy-mode-map (kbd "C-r") 'elpy-shell-send-statement-and-step)
 (setq elpy-company-add-completion-from-shell t)
 ;;(setq elpy-shell-use-project-root nil)
-(setq elpy-shell-display-buffer-after-send t)
+;;(setq elpy-shell-display-buffer-after-send t)
+(add-hook 'popper-open-popup-hook 'end-of-buffer) ;;doesnt work
+(defadvice py-postprocess-output-buffer (after my-py-postprocess-output-buffer activate)
+  (run-with-idle-timer 0 nil (lambda ()
+                               (let ((output-win (get-buffer-window py-output-buffer))
+                                     (orig-win (selected-window)))
+                                 (when output-win
+                                   (select-window output-win)
+                                   (end-of-buffer)
+                                   (select-window orig-win))))))
+
 
 ;; always highlight matching parenthesis
 (show-paren-mode 1)
@@ -608,6 +618,8 @@ Version: 2018-12-23 2022-04-07"
   :hook ((after-init . global-corfu-mode)
          (global-corfu-mode . corfu-popupinfo-mode)))
 
+;;this messes with the colors in terminal mode. Comes from init-corfu from centaur emacs
+;; but I deactivated it
 ;;(unless (display-graphic-p)
 ;;  (use-package corfu-terminal
 
