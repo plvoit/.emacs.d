@@ -146,7 +146,7 @@ Otherwise the startup will be very slow."
     (scroll-bar-mode -1))    
 
 ;; make tab key always call a indent command.
-(setq-default tab-always-indent t)
+;;(setq-default tab-always-indent t)
 ;; make tab key do indent first then completion.
 (setq-default tab-always-indent 'complete)
 
@@ -373,6 +373,17 @@ Prompt only if there are unsaved changes."
 
 ;;(require 'shackle)   ;; doesnt seem to work
 ;;(setq shackle-rules '(("*Python*" :align bottom :size 0.25)))
+;; this somehow doesn't work, probably overwritten by corfu Auto-complete
+;;(add-hook 'elpy-mode-hook
+;;  (lambda ()
+;;   (local-set-key [tab] 'indent-for-tab-command)))
+
+(add-hook 'python-mode-hook
+  (lambda () (setq indent-tabs-mode t)))
+
+(add-hook 'elpy-mode-hook
+  (lambda () (setq indent-tabs-mode t)))
+
 
 ;; switch off auto documentation because it's annoying
 (eldoc-mode -1)
@@ -391,8 +402,10 @@ Prompt only if there are unsaved changes."
     (setenv "WORKON_HOME" "/home/voit/.conda/envs/")
     (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))
 
-
-
+;; TAB is used for corfu Auto-complete so it needs to be redefined
+(setq-default tab-width 4)
+(define-key elpy-mode-map (kbd "<tab>") 'python-indent-shift-right)
+(define-key elpy-mode-map (kbd "<S-tab>") 'python-indent-shift-lefty)
 ;; run line in shell
 (define-key elpy-mode-map (kbd "C-r") 'elpy-shell-send-statement-and-step)
 (setq elpy-company-add-completion-from-shell t)
@@ -559,21 +572,7 @@ Version: 2018-12-23 2022-04-07"
    ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
    
 
-
-;;========================================
-;; Centaur Tabs
-;;========================================
-;; (require 'centaur-tabs)
-;; (centaur-tabs-mode t)
-;; (global-set-key (kbd "C-c C-p")  'centaur-tabs-backward)
-;; (global-set-key (kbd "C-c C-n") 'centaur-tabs-forward)
-;; (setq centaur-tabs-set-icons t)
-;; (setq centaur-tabs-modified-marker "⬤")
-
-
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
-
-;;(global-set-key (kbd "<M-o>") 'ace-window)
 
 (when (display-graphic-p)
   (require 'all-the-icons))
