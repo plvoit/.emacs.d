@@ -112,7 +112,6 @@ Otherwise the startup will be very slow."
     consult-flyspell
     embark
     embark-consult
-
     )
   )
 
@@ -207,6 +206,9 @@ Prompt only if there are unsaved changes."
 
 (setq dashboard-set-file-icons t)
 (setq dashboard-set-footer nil)
+
+(setq dashboard-items '((recents  . 5)
+                        (bookmarks . 5)))
 
 ;; ===================================
 ;; Doom Modeline
@@ -306,8 +308,7 @@ Prompt only if there are unsaved changes."
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes '(default))
  '(ispell-dictionary nil)
- '(package-selected-packages
-   '(## auctex yafolding all-the-icons-dired all-the-icons nerd-icons centaur-tabs magit flycheck color-theme-sanityinc-tomorrow zenburn-theme color-theme multiple-cursors better-defaults))
+ '(package-selected-packages '(use-package corfu cape better-defaults))
  '(zoom-ignored-major-modes '(python-mode))
  '(zoom-mode t nil (zoom)))
 
@@ -489,7 +490,7 @@ Prompt only if there are unsaved changes."
 (add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode 1))) ;;hide details
 
 ;;show file size in Megabyte
-(setq dired-listing-switches "-lhaG")
+(setq dired-listing-switches "-lhaG --group-directories-first")
 
 (require 'dired-explorer)
 (add-hook 'dired-mode-hook 'dired-explorer-mode)
@@ -642,17 +643,7 @@ Version: 2018-12-23 2022-04-07"
 
 
     
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages '(use-package corfu cape better-defaults)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+
 
 (require 'init-completion)
