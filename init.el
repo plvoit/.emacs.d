@@ -190,7 +190,7 @@ Prompt only if there are unsaved changes."
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 ;; Set the title
-(setq dashboard-banner-logo-title "Dashboard")
+(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region")
 ;; Set the banner
 (setq dashboard-startup-banner 'logo)
 ;; Value can be
