@@ -23,7 +23,7 @@
 ;;   ;; Suppress file handlers operations at startup
 ;;   ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
 ;;   (let ((old-value file-name-handler-alist))
-;;     (setq file-name-handler-alist nil)
+2;;     (setq file-name-handler-alist nil)
 ;;     (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
 ;;    (add-hook 'emacs-startup-hook
 ;;              (lambda ()
@@ -112,6 +112,8 @@ Otherwise the startup will be very slow."
     consult-flyspell
     embark
     embark-consult
+	gcmh
+	doom-themes
     )
   )
 
@@ -125,6 +127,18 @@ Otherwise the startup will be very slow."
 ;; ===================================
 ;; Basic Customization
 ;; ===================================
+  ;; Increase how much is read from processes in a single chunk (default is 4kb)
+(setq read-process-output-max #x10000)  ; 64kb
+
+;; Garbage Collector Magic Hack
+(use-package gcmh
+  :diminish
+  :hook (emacs-startup . gcmh-mode)
+  :init
+  (setq gcmh-idle-delay 'auto
+        gcmh-auto-idle-delay-factor 10
+        gcmh-high-cons-threshold #x1000000)) ;; 16MB    
+
 
 (add-hook 'term-setup-hook
   (lambda ()
@@ -138,9 +152,10 @@ Otherwise the startup will be very slow."
 (global-linum-mode t)               ;; Enable line numbers globally
 (tool-bar-mode -1)                  ;; disable toolbar in GUI
 (fset 'yes-or-no-p 'y-or-n-p)
-(setq ring-bell-function 'ignore)
+;;(setq ring-bell-function 'ignore)
+(setq visible-bell t)
 ;;(if (equal system-name "n-hpc-login1")
-;;    (scroll-bar-mode -1))  ;; No visual indicator pleaser)
+;;    (scroll-bar-mode -1))  ;; No visual indicator please)
 (if (display-graphic-p)
     (scroll-bar-mode -1))    
 
@@ -148,6 +163,7 @@ Otherwise the startup will be very slow."
 ;;(setq-default tab-always-indent t)
 ;; make tab key do indent first then completion.
 (setq-default tab-always-indent 'complete)
+(setq delete-by-moving-to-trash t)
 
 
 (tooltip-mode nil)
@@ -265,7 +281,31 @@ Prompt only if there are unsaved changes."
                 "^\\*vterm.*\\*$"  vterm-mode  ;vterm as a popup
                 )))
 
-(global-set-key (kbd "C-o") 'popper-toggle-latest)  
+
+
+;; (defun popper-toggle-latest-modified (&optional arg)									
+;;   "Toggle visibility of the last opened popup 
+;; With prefix ARG \\[universal-argument], toggle visibility of the next popup windows	  
+;; while keeping the current one (FIXME: This 
+;; With a double prefix ARG \\[universal-argument]										  
+;; \\[universal-argument], toggle all popup-windows. Note that only						 
+;; one buffer can be show in one slot, so it will display as many 
+;; windows as it can."											   
+;;   (interactive "p")											   
+;;   (let ((group (when popper-group-function					   
+;;                  (funcall popper-group-function))))			   
+;;     (if popper-open-popup-alist								   
+;;         (pcase arg											   
+;;           (4 (popper-open-latest group))						   
+;;           (16 (popper--bury-all))							   
+;;           (_ (popper-close-latest)))							   
+;;       (if (equal arg 16)										   
+;;           (popper--open-all)									   
+;;         (popper-open-latest group)))							   
+;;     (end-of-buffer-other-window)								   
+;; 	))															   
+
+(global-set-key (kbd "C-o") 'popper-toggle-latest)
 (global-set-key (kbd "M-o") 'popper-cycle)
 (global-set-key (kbd "C-M-`") 'popper-toggle-type)
 (popper-mode +1)
@@ -306,9 +346,10 @@ Prompt only if there are unsaved changes."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes '(default))
+ '(custom-safe-themes
+   '("afa47084cb0beb684281f480aa84dab7c9170b084423c7f87ba755b15f6776ef" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
  '(ispell-dictionary nil)
- '(package-selected-packages '(use-package corfu cape better-defaults))
+ '(package-selected-packages '(doom-themes use-package corfu cape better-defaults))
  '(zoom-ignored-major-modes '(python-mode))
  '(zoom-mode t nil (zoom)))
 
@@ -380,14 +421,22 @@ Prompt only if there are unsaved changes."
 ;;   (local-set-key [tab] 'indent-for-tab-command)))
 
 (add-hook 'python-mode-hook
-  (lambda () (setq indent-tabs-mode t)))
+  (lambda () (setq indent-tabs-mode nil))) ; Permanently indent with spaces, never with TABs
 
 (add-hook 'elpy-mode-hook
-  (lambda () (setq indent-tabs-mode t)))
+  (lambda () (setq indent-tabs-mode nil)))
 
 
 ;; switch off auto documentation because it's annoying
-(eldoc-mode -1)
+(add-hook 'elpy-mode-hook
+  (lambda () (eldoc-mode nil)))
+
+(add-hook 'python-mode-hook
+  (lambda () (corfu-mode -1)))
+
+(add-hook 'elpy-mode-hook
+  (lambda () (corfu-mode -1)))
+
 
 ;;exchange flymake to the more modern flycheck
 (when (load "flycheck" t t)
@@ -419,6 +468,10 @@ Prompt only if there are unsaved changes."
 ;;(setq elpy-shell-use-project-root nil)
 ;;(setq elpy-shell-display-buffer-after-send t)
 (add-hook 'popper-open-popup-hook 'end-of-buffer) ;;doesnt work
+
+
+
+
 (defadvice py-postprocess-output-buffer (after my-py-postprocess-output-buffer activate)
   (run-with-idle-timer 0 nil (lambda ()
                                (let ((output-win (get-buffer-window py-output-buffer))
