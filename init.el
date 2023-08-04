@@ -149,13 +149,18 @@ Otherwise the startup will be very slow."
 
 (setq inhibit-startup-message t)    ;; Hide the startup message
 (menu-bar-mode -1)
-(global-linum-mode -1)               ;; Enable line numbers globally
+(global-linum-mode 0)               ;; Disable line numbers globally
+
+;; also in lisp mode
+(add-hook  'emacs-lisp-mode-hook #'(lambda()(display-line-numbers-mode -1)))
+
+
 (tool-bar-mode -1)                  ;; disable toolbar in GUI
 (fset 'yes-or-no-p 'y-or-n-p)
 ;;(setq ring-bell-function 'ignore)
 (setq visible-bell t)
 ;;(if (equal system-name "n-hpc-login1")
-;;    (scroll-bar-mode -1))  ;; No visual indicator please)
+;;    (scroll-bar-mode -1))  ;; No visual indicator please) 
 (if (display-graphic-p)
     (scroll-bar-mode -1))    
 
@@ -682,7 +687,7 @@ Version: 2018-12-23 2022-04-07"
 ;;=======================================
 (use-package corfu
   :custom
-  (corfu-auto t)                 ;; Enable auto completion
+  (corfu-auto t)                 ;; Disable auto completion
   (corfu-auto-prefix 2)          ;; Trigger auto completion with 2 chars
   (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
   (corfu-quit-no-match t)        ;; Automatically quit if there is no match
