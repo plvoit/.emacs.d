@@ -149,7 +149,7 @@ Otherwise the startup will be very slow."
 
 (setq inhibit-startup-message t)    ;; Hide the startup message
 (menu-bar-mode -1)
-(global-linum-mode t)               ;; Enable line numbers globally
+(global-linum-mode -1)               ;; Enable line numbers globally
 (tool-bar-mode -1)                  ;; disable toolbar in GUI
 (fset 'yes-or-no-p 'y-or-n-p)
 ;;(setq ring-bell-function 'ignore)
@@ -360,11 +360,27 @@ Prompt only if there are unsaved changes."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+;;===================================================
+;;Custom funcitons
+;;===================================================
+
 
 (defun day ()
   "Switches to day theme"
   (interactive)
   (load-theme 'sanityinc-tomorrow-day t))
+
+(defun dark ()
+  "Switches to dark theme"
+  (interactive)
+  (load-theme 'zenburn t))
+
+(defun conda ()
+  "Loads a Python conda environment"
+  (interactive)
+  (pyvenv-workon))
+
+
 
 ;; tramp tries to compress remote and decompress local. THis messes up python files. Change limits here
 (setq tramp-inline-compress-start-size "20000000") ;;20Mb

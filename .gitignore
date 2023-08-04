@@ -2,7 +2,6 @@
 *
 
 # But not these files...
-!bookmarks
 !.gitignore
 !init.el
 !manual_setup_documentation.md
