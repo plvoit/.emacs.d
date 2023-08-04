@@ -210,7 +210,7 @@ Prompt only if there are unsaved changes."
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 ;; Set the title
-(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region")
+(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors")
 ;; Set the banner
 (setq dashboard-startup-banner 'logo)
 ;; Value can be
@@ -354,7 +354,8 @@ Prompt only if there are unsaved changes."
  '(custom-safe-themes
    '("afa47084cb0beb684281f480aa84dab7c9170b084423c7f87ba755b15f6776ef" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
  '(ispell-dictionary nil)
- '(package-selected-packages '(doom-themes use-package corfu cape better-defaults))
+ '(package-selected-packages
+   '(csv-mode doom-themes use-package corfu cape better-defaults))
  '(zoom-ignored-major-modes '(python-mode))
  '(zoom-mode t nil (zoom)))
 
@@ -721,3 +722,12 @@ Version: 2018-12-23 2022-04-07"
 
 
 (require 'init-completion)
+
+
+;;=================================================
+;;Notes
+;;=================================================
+
+;;rgrep
+;; vertico mode will always complete the expression with the first suggestion
+;; to proceed without completion, press M+Enter (Ret).This way one can search with wildcards
