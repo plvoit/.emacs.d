@@ -456,6 +456,9 @@ Prompt only if there are unsaved changes."
       :foreground "gray70" :background "gray90" :box nil)
 (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
       :background "#ffd699" :foreground "black" :box nil)
+(set-face-attribute 'tab-line-tab-modified nil ;; modified tab in current window
+		    :background "ffd699" :foreground "red" :box nil)
+
 
 (desktop-save-mode 1)
 
