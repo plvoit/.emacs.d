@@ -32,6 +32,9 @@
 
 ;; Python Mode
 ;; Install: pip install pyflakes autopep8
+;; for this to work you need to install the python-lsp packages via pip:
+;; $ pip install "python-lsp-server[all]"
+;; $  pip install pyls
 (use-package python
   :ensure nil
   :hook (inferior-python-mode . (lambda ()
@@ -56,8 +59,6 @@
 ;;===============================
 ;; Python Settings
 ;;===============================
-;; for this to work you need to install the python-lsp packages via pip:
-;; $ pip install "python-lsp-server[all]"
 
 (if (equal system-name "n-hpc-login1")
     (setenv "WORKON_HOME" "/home/voit/.conda/envs/")
@@ -88,7 +89,7 @@
 
 (add-hook 'python-mode-hook
   (lambda ()
-    (local-set-key (kbd "C-<return>") 'python-send-and-step)
+    (local-set-key (kbd "C-r") 'python-send-and-step)
     (local-set-key (kbd "C-c C-e") 'python-shell-send-region)))
 
 ;;try to control postition and size of Python Shell

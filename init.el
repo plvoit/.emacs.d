@@ -118,6 +118,7 @@ Otherwise the startup will be very slow."
     eglot
     lsp-mode
     lsp-pyright
+    powerline
     )
   )
 
