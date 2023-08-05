@@ -156,13 +156,15 @@
       (python-shell-send-statement (thing-at-point 'line))
       (next-line)))))
 
+;; (defun my-run-python ()
+;;   "Opens Python shell without switching to its window"
+;;   (interactive)
+;;   (run-python))
+;;  ;; (other-window))
+
 (add-hook 'python-mode-hook
   (lambda ()
-    (local-set-key (kbd "C-r") 'python-send-and-step-smart)
-    (local-set-key (kbd "C-c C-e") 'python-shell-send-region)))
-
-
-
+    (local-set-key (kbd "C-r") 'python-send-and-step-smart)))
 
 
 (provide 'init-python)

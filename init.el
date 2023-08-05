@@ -233,6 +233,9 @@ Prompt only if there are unsaved changes."
   :hook (after-init . electric-pair-mode)
   :init (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
 
+
+(global-set-key (kbd "C-1") 'comment-or-uncomment-region)
+
 ;; ===================================
 ;; Dashboard
 ;; ===================================
