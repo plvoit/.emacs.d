@@ -88,12 +88,12 @@ Otherwise the startup will be very slow."
     flycheck                    ;; syntax check for python, seems to work less buggy than flymake
     magit
     all-the-icons              ;;all-the-icons-install-fonts might be needed for the first run (out of emacs)
+    shackle
     all-the-icons-dired
     dired-explorer  ;;jump to file starting with "keystroke"
     yafolding     ;;code folding
     reftex
     auctex
-    shackle ;; set window sizes for major modes. E.g., for Python mode
     doom-modeline
     dashboard
     guru-mode
@@ -119,6 +119,8 @@ Otherwise the startup will be very slow."
     lsp-mode
     lsp-pyright
     powerline
+    pyvenv
+    realgud
     )
   )
 
@@ -387,7 +389,7 @@ Prompt only if there are unsaved changes."
    '("afa47084cb0beb684281f480aa84dab7c9170b084423c7f87ba755b15f6776ef" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
+   '(realgud-python realgud consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
  '(zoom-ignored-major-modes '(python-mode))
  '(zoom-mode t nil (zoom)))
 

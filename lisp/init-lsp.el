@@ -106,31 +106,41 @@
 
    
 ;; Debug
-(use-package dap-mode
-  :disabled
-  :defines dap-python-executable
-  :functions dap-hydra/nil
-  :diminish
-  :bind (:map lsp-mode-map
-         ("<f5>" . dap-debug)
-         ("M-<f5>" . dap-hydra))
-  :hook ((after-init     . dap-auto-configure-mode)
-         (dap-stopped    . (lambda (_) (dap-hydra)))
-         (dap-terminated . (lambda (_) (dap-hydra/nil)))
+;; Configure realgud for Python mode
 
-         ((python-mode python-ts-mode)            . (lambda () (require 'dap-python)))
-;;         ((ruby-mode ruby-ts-mode)                . (lambda () (require 'dap-ruby)))
-;;         ((go-mode go-ts-mode)                    . (lambda () (require 'dap-go)))
-;;         ((java-mode java-ts-mode jdee-mode)      . (lambda () (require 'dap-java)))
-;;         ((c-mode c-ts-mode c++-mode c++-ts-mode) . (lambda () (require 'dap-lldb)))
-;;         ((objc-mode swift-mode)                  . (lambda () (require 'dap-lldb)))
-;;         (php-mode                                . (lambda () (require 'dap-php)))
-;;         (elixir-mode                             . (lambda () (require 'dap-elixir)))
-;;         ((js-mode js2-mode js-ts-mode)           . (lambda () (require 'dap-chrome)))
-         (powershell-mode                         . (lambda () (require 'dap-pwsh))))
-init (when (executable-find "python3")
-       (setq dap-python-executable "python3")))
 
+
+;; (require 'dap-python)
+;; ;; if you installed debugpy, you need to set this
+;; ;; https://github.com/emacs-lsp/dap-mode/issues/306
+;; (setq dap-python-debugger 'debugpy)
+
+
+;; (use-package dap-mode
+;;   :disabled
+;;   :defines dap-python-executable
+;;   :functions dap-hydra/nil
+;;   :diminish
+;;   :bind (:map lsp-mode-map
+;;          ("<f5>" . dap-debug)
+;;          ("M-<f5>" . dap-hydra))
+;;   :hook ((after-init     . dap-auto-configure-mode)
+;;          (dap-stopped    . (lambda (_) (dap-hydra)))
+;;          (dap-terminated . (lambda (_) (dap-hydra/nil)))
+
+;;          ((python-mode python-ts-mode)            . (lambda () (require 'dap-python)))
+;; ;;         ((ruby-mode ruby-ts-mode)                . (lambda () (require 'dap-ruby)))
+;; ;;         ((go-mode go-ts-mode)                    . (lambda () (require 'dap-go)))
+;; ;;         ((java-mode java-ts-mode jdee-mode)      . (lambda () (require 'dap-java)))
+;; ;;         ((c-mode c-ts-mode c++-mode c++-ts-mode) . (lambda () (require 'dap-lldb)))
+;; ;;         ((objc-mode swift-mode)                  . (lambda () (require 'dap-lldb)))
+;; ;;         (php-mode                                . (lambda () (require 'dap-php)))
+;; ;;         (elixir-mode                             . (lambda () (require 'dap-elixir)))
+;; ;;         ((js-mode js2-mode js-ts-mode)           . (lambda () (require 'dap-chrome)))
+;;          (powershell-mode                         . (lambda () (require 'dap-pwsh))))
+;; init (when (executable-find "python3")
+;;        (setq dap-python-executable "python3")))
+;; Load and configure 'realgud' using use-package
 ;; Python
 (use-package lsp-pyright
   :preface

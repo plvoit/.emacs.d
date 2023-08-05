@@ -167,6 +167,9 @@
     (local-set-key (kbd "C-r") 'python-send-and-step-smart)))
 
 
+(global-set-key (kbd "<f5>") 'realgud:pdb)
+
+
 (provide 'init-python)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
