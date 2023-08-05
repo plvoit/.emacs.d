@@ -81,16 +81,12 @@
     (window-height . 0.3)))
 
 
-(defun python-send-and-step ()
-  "Send the current line to the Python shell and move to the next line."
-  (interactive)
-  (python-shell-send-statement (thing-at-point 'line))
-  (next-line))
+;; (defun python-send-and-step ()
+;;   "Send the current line to the Python shell and move to the next line."
+;;   (interactive)
+;;   (python-shell-send-statement (thing-at-point 'line))
+;;   (next-line))
 
-(add-hook 'python-mode-hook
-  (lambda ()
-    (local-set-key (kbd "C-r") 'python-send-and-step)
-    (local-set-key (kbd "C-c C-e") 'python-shell-send-region)))
 
 ;;try to control postition and size of Python Shell
 ;; from https://www.masteringemacs.org/article/demystifying-emacs-window-manager
@@ -99,6 +95,74 @@
 (add-hook 'python-mode-hook
           (lambda ()
             (zoom-mode -1)))
+
+
+;; (defun elpy-shell-send-statement-and-step ()
+;;   "Send current or next statement to Python shell and step.
+
+;; If the current line is part of a statement, sends this statement.
+;; Otherwise, skips forward to the next code line and sends the
+;; corresponding statement."
+;;   (interactive)
+;;   (elpy-shell--ensure-shell-running)
+;;   (elpy-shell--nav-beginning-of-statement)
+;;   ;; Make sure there is a statement to send
+;;   (unless (looking-at "[[:space:]]*$")
+;;     (unless elpy-shell-echo-input (elpy-shell--append-to-shell-output "\n"))
+;;     (let ((beg (save-excursion (beginning-of-line) (point)))
+;;           (end (progn (elpy-shell--nav-end-of-statement) (point))))
+;;       (unless (eq beg end)
+;;         (elpy-shell--flash-and-message-region beg end)
+;;         (elpy-shell--add-to-shell-history (buffer-substring beg end))
+;;         (elpy-shell--with-maybe-echo
+;;          (python-shell-send-string
+;;           (python-shell-buffer-substring beg end)))))
+;;     (python-nav-forward-statement)))
+
+
+;;this works
+(defun python-send-and-step ()
+  "Send the current line to the Python shell and move to the next line."
+  (interactive)
+  (if (region-active-p)
+      (python-shell-send-region (region-beginning) (region-end))
+      (python-shell-send-statement (thing-at-point 'line)))
+  (next-line))
+
+;; this works
+(defun python-send-statment ()
+  "Sends a statement to shell"
+  (interactive)
+    (unless (looking-at "[[:space:]]*$")
+     (let ((beg (save-excursion (beginning-of-line) (point)))
+          (end (progn (python-nav-end-of-block) (point))))
+          (python-shell-buffer-substring beg end)))
+  (python-nav-forward-statement)
+  )
+
+(defun python-send-and-step-smart ()
+  "Send the current line to the Python shell and move to the next line."
+  (interactive)
+  (if (region-active-p)
+      (python-shell-send-region (region-beginning) (region-end))
+    (let ((beg (save-excursion (beginning-of-line) (point)))
+          (end (progn (python-nav-forward-sexp) (point))))
+      (message "The beg is: %s" beg)
+      (message "The end is: %s" end)
+      (message "Substring: %s" (buffer-substring beg end)
+      (unless (eq beg end)
+        (python-shell-send-string (python-shell-buffer-substring beg end))
+        (next-line))
+      (python-shell-send-statement (thing-at-point 'line))
+      (next-line)))))
+
+(add-hook 'python-mode-hook
+  (lambda ()
+    (local-set-key (kbd "C-r") 'python-send-and-step-smart)
+    (local-set-key (kbd "C-c C-e") 'python-shell-send-region)))
+
+
+
 
 
 (provide 'init-python)
