@@ -77,7 +77,7 @@ Otherwise the startup will be very slow."
 ;; myPackages contains a list of package names
 (defvar myPackages
   '(better-defaults                 ;; Set up some better Emacs defaults
-    elpy                            ;; Python IDE
+    ;;elpy                            ;; Python IDE
     zoom                            ;; better window splitting
     ;;ace-window                      ;; easier switching between windows
     markdown-mode

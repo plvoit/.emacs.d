@@ -56,6 +56,9 @@
 ;;===============================
 ;; Python Settings
 ;;===============================
+;; for this to work you need to install the python-lsp packages via pip:
+;; $ pip install "python-lsp-server[all]"
+
 (if (equal system-name "n-hpc-login1")
     (setenv "WORKON_HOME" "/home/voit/.conda/envs/")
     (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))
