@@ -112,8 +112,12 @@ Otherwise the startup will be very slow."
     consult-flyspell
     embark
     embark-consult
-	gcmh
-	doom-themes
+    gcmh
+    doom-themes
+    which-key
+    eglot
+    lsp-mode
+    lsp-pyright
     )
   )
 
@@ -127,8 +131,9 @@ Otherwise the startup will be very slow."
 ;; ===================================
 ;; Basic Customization
 ;; ===================================
-  ;; Increase how much is read from processes in a single chunk (default is 4kb)
+;; Increase how much is read from processes in a single chunk (default is 4kb)
 (setq read-process-output-max #x10000)  ; 64kb
+
 
 ;; Garbage Collector Magic Hack
 (use-package gcmh
@@ -146,6 +151,12 @@ Otherwise the startup will be very slow."
     (define-key function-key-map "\e[1;5B" [down])
     (define-key function-key-map "\e[1;5C" [right])
     (define-key function-key-map "\e[1;5D" [left])))
+
+;;Enable key help functions
+(require 'which-key)
+(which-key-mode)
+(which-key-setup-side-window-bottom)
+
 
 (setq inhibit-startup-message t)    ;; Hide the startup message
 (menu-bar-mode -1)
@@ -169,7 +180,7 @@ Otherwise the startup will be very slow."
 ;; make tab key do indent first then completion.
 (setq-default tab-always-indent 'complete)
 (setq delete-by-moving-to-trash t)
-
+(setq confirm-kill-processes nil)
 
 (tooltip-mode nil)
 (setq show-help-function nil)
@@ -203,6 +214,24 @@ Prompt only if there are unsaved changes."
 
 (guru-global-mode +1)
 
+
+;;==================================
+;; Editing
+;;==================================
+
+(require 'multiple-cursors)   ;;multiple editing like in pycharm
+(define-key global-map (kbd "M-j") 'mc/mark-next-like-this-word)
+
+(require 'expand-region)           ;; smart expanding selection of expressions
+(global-set-key (kbd "C-M-W") 'er/expand-region)
+
+
+;; Automatic parenthesis pairing
+(use-package elec-pair
+  :ensure nil
+  :hook (after-init . electric-pair-mode)
+  :init (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
+
 ;; ===================================
 ;; Dashboard
 ;; ===================================
@@ -210,7 +239,7 @@ Prompt only if there are unsaved changes."
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 ;; Set the title
-(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors")
+(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors\nC-x 0 = delete window")
 ;; Set the banner
 (setq dashboard-startup-banner 'logo)
 ;; Value can be
@@ -287,7 +316,6 @@ Prompt only if there are unsaved changes."
                 )))
 
 
-
 ;; (defun popper-toggle-latest-modified (&optional arg)									
 ;;   "Toggle visibility of the last opened popup 
 ;; With prefix ARG \\[universal-argument], toggle visibility of the next popup windows	  
@@ -355,7 +383,7 @@ Prompt only if there are unsaved changes."
    '("afa47084cb0beb684281f480aa84dab7c9170b084423c7f87ba755b15f6776ef" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(csv-mode doom-themes use-package corfu cape better-defaults))
+   '(consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
  '(zoom-ignored-major-modes '(python-mode))
  '(zoom-mode t nil (zoom)))
 
@@ -367,7 +395,7 @@ Prompt only if there are unsaved changes."
  ;; If there is more than one, they won't work right.
  )
 ;;===================================================
-;;Custom funcitons
+;;Custom functions
 ;;===================================================
 
 
@@ -424,123 +452,6 @@ Prompt only if there are unsaved changes."
       :background "#ffd699" :foreground "black" :box nil)
 
 (desktop-save-mode 1)
-;;===================================================
-;;IDE Stuff
-;;===================================================
-
-(elpy-enable)
-
-;;(add-hook 'elpy-mode-hook 'zoom-mode) ;;not very elegant. Does zoom mode stay switched off?
-(add-hook 'elpy-mode-hook
-          (lambda ()
-            (zoom-mode -1)))
-
-;;(require 'shackle)   ;; doesnt seem to work
-;;(setq shackle-rules '(("*Python*" :align bottom :size 0.25)))
-;; this somehow doesn't work, probably overwritten by corfu Auto-complete
-;;(add-hook 'elpy-mode-hook
-;;  (lambda ()
-;;   (local-set-key [tab] 'indent-for-tab-command)))
-
-(add-hook 'python-mode-hook
-  (lambda () (setq indent-tabs-mode nil))) ; Permanently indent with spaces, never with TABs
-
-(add-hook 'elpy-mode-hook
-  (lambda () (setq indent-tabs-mode nil)))
-
-
-;; switch off auto documentation because it's annoying
-(add-hook 'elpy-mode-hook
-  (lambda () (eldoc-mode nil)))
-
-(add-hook 'python-mode-hook
-  (lambda () (corfu-mode -1)))
-
-(add-hook 'elpy-mode-hook
-  (lambda () (corfu-mode -1)))
-
-
-;;exchange flymake to the more modern flycheck
-(when (load "flycheck" t t)
-  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-  (add-hook 'elpy-mode-hook 'flycheck-mode))
-
-;; workon home  to select conda environments with Alt+x pyvenv-workon
-;; Choosing an conda environment with pyvenv-workon apparently has to to happen before opening the
-;; console (starting the python process)
-
-
-(if (equal system-name "n-hpc-login1")
-    (setenv "WORKON_HOME" "/home/voit/.conda/envs/")
-    (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))
-
-;; TAB is used for corfu Auto-complete so it needs to be redefined
-(setq-default tab-width 4)
-;;(add-hook 'elpy-mode-hook
-;;  (lambda ()
-;;	(local-set-key [\t] 'python-indent-shift-right)
-;;	(local-set-key [?\S-\t] 'python-indent-shift-left)))
-
-
-(define-key elpy-mode-map (kbd "TAB") 'python-indent-shift-right)
-;;(define-key elpy-mode-map (kbd "[?\S-\t]") 'python-indent-shift-left) ;;cant get this to work
-;; run line in shell
-(define-key elpy-mode-map (kbd "C-r") 'elpy-shell-send-statement-and-step)
-(setq elpy-company-add-completion-from-shell t)
-;;(setq elpy-shell-use-project-root nil)
-;;(setq elpy-shell-display-buffer-after-send t)
-(add-hook 'popper-open-popup-hook 'end-of-buffer) ;;doesnt work
-
-
-
-
-(defadvice py-postprocess-output-buffer (after my-py-postprocess-output-buffer activate)
-  (run-with-idle-timer 0 nil (lambda ()
-                               (let ((output-win (get-buffer-window py-output-buffer))
-                                     (orig-win (selected-window)))
-                                 (when output-win
-                                   (select-window output-win)
-                                   (end-of-buffer)
-                                   (select-window orig-win))))))
-
-
-;; always highlight matching parenthesis
-(show-paren-mode 1)
-
-(require 'multiple-cursors)   ;;multiple editing like in pycharm
-(define-key global-map (kbd "M-j") 'mc/mark-next-like-this-word)
-
-(require 'expand-region)           ;; smart expanding selection of expressions
-(global-set-key (kbd "C-M-W") 'er/expand-region)
-
-
-;;code folding based on indentation
-(require 'yafolding)
-(define-key global-map (kbd "C-*") 'yafolding-hide-all)
-(define-key global-map (kbd "C-'") 'yafolding-show-all)
-
-
-;;try to control postition and size of Python Shell
-;; from https://www.masteringemacs.org/article/demystifying-emacs-window-manager
-;; places python shell at bottom, and small
-(add-to-list 'display-buffer-alist
-  '("*Python*" display-buffer-in-direction
-    (direction . bottom)
-    (window . root)
-    (window-height . 0.3)))
-
-;;this should place a fixed sidebar, but at least in Elpy this doesn't really work
-;; left, top, right, bottom
-;; (setq window-sides-slots '(0 0 1 0))
-
-;; (add-to-list 'display-buffer-alist
-;;           `("*Python*"
-;;             display-buffer-in-side-window
-;;             (side . right)
-;;             (slot . 0)
-;;             (window-parameters . ((no-delete-other-windows . t)))
-;;             (window-width . 5)))
-
 
 ;;===================================================
 ;; Buffer and windows
@@ -717,13 +628,9 @@ Version: 2018-12-23 2022-04-07"
   (add-to-list 'completion-at-point-functions #'cape-abbrev))  
 
 
-    
-
-
-
 (require 'init-completion)
-
-
+(require 'init-lsp)
+(require 'init-python)
 ;;=================================================
 ;;Notes
 ;;=================================================
