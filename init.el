@@ -183,7 +183,6 @@ Otherwise the startup will be very slow."
 ;; make tab key do indent first then completion.
 (setq-default tab-always-indent 'complete)
 (setq delete-by-moving-to-trash t)
-(setq confirm-kill-processes nil)
 
 (tooltip-mode nil)
 (setq show-help-function nil)
@@ -236,7 +235,7 @@ Prompt only if there are unsaved changes."
   :init (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
 
 
-(global-set-key (kbd "C-1") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c c") 'comment-or-uncomment-region)
 
 ;; ===================================
 ;; Dashboard

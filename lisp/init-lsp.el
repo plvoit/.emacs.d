@@ -107,7 +107,8 @@
    
 ;; Debug
 ;; Configure realgud for Python mode
-
+(require 'realgud)
+(setq realgud-safe-mode nil)
 
 
 ;; (require 'dap-python)
