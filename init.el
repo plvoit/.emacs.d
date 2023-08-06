@@ -244,7 +244,7 @@ Prompt only if there are unsaved changes."
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 ;; Set the title
-(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors\nC-x 0 = delete window")
+(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors\nC-x 0 = delete window\nC-x C-j = dired jump to folder of current buffer, M-w = copy filename")
 ;; Set the banner
 (setq dashboard-startup-banner 'logo)
 ;; Value can be
@@ -353,9 +353,13 @@ Prompt only if there are unsaved changes."
 (popper-echo-mode +1)
 
 ;;C-m is the same as Enter, this changes it. From https://emacs.stackexchange.com/questions/20240/how-to-distinguish-c-m-from-return
+;;(if (equal system-name "GK-NB-14.ad.umwelt.uni-potsdam.de")
+;;    (define-key input-decode-map [?\C-m] [C-m]))
 
-(if (equal system-name "GK-NB-14.ad.umwelt.uni-potsdam.de")
-    (define-key input-decode-map [?\C-m] [C-m]))
+; (when (display-graphic-p)
+;   (define-key input-decode-map [?\C-m] ["RET"]))
+
+;;(define-key input-decode-map [C-m] ["RET"])    
 
 ;; Load the theme of choice:
 (load-theme 'zenburn t)
