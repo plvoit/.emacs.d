@@ -218,6 +218,12 @@ Prompt only if there are unsaved changes."
              (delete-other-windows)))))
 
 (guru-global-mode +1)
+
+;;ediff set vertical split as default-directory
+(custom-set-variables
+ '(ediff-window-setup-function 'ediff-setup-windows-plain)
+ '(ediff-diff-options "-w")
+ '(ediff-split-window-function 'split-window-horizontally))
 ;;==================================
 ;; Editing
 ;;==================================
