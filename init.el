@@ -121,6 +121,7 @@ Otherwise the startup will be very slow."
     powerline
     pyvenv
     realgud
+    company
     )
   )
 
@@ -153,8 +154,10 @@ Otherwise the startup will be very slow."
     (define-key function-key-map "\e[1;5A" [up])
     (define-key function-key-map "\e[1;5B" [down])
     (define-key function-key-map "\e[1;5C" [right])
-    (define-key function-key-map "\e[1;5D" [left])))
-
+    (define-key function-key-map "\e[1;5D" [left])
+    (global-company-mode)
+    (global-set-key (kbd "M-*") 'hs-show-all)
+    (global-set-key (kbd "M-'") 'hs-hide-all)))
 ;;Enable key help functions
 (require 'which-key)
 (which-key-mode)
@@ -215,8 +218,6 @@ Prompt only if there are unsaved changes."
              (delete-other-windows)))))
 
 (guru-global-mode +1)
-
-
 ;;==================================
 ;; Editing
 ;;==================================
@@ -235,7 +236,7 @@ Prompt only if there are unsaved changes."
   :init (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
 
 
-(global-set-key (kbd "C-c c") 'comment-or-uncomment-region)
+(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 
 ;; ===================================
 ;; Dashboard
@@ -244,7 +245,7 @@ Prompt only if there are unsaved changes."
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 ;; Set the title
-(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors\nC-x 0 = delete window\nC-x C-j = dired jump to folder of current buffer, M-w = copy filename")
+(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors\nC-x 0 = delete window\nC-x C-j = dired jump to folder of current buffer, C-M-n = copy filename, C-M-p = copy filename with fullpath\nC-M n(or p) = navigate parenthesis\nM-y = cycle through kills, C-x C-x = jump point to last position?")
 ;; Set the banner
 (setq dashboard-startup-banner 'logo)
 ;; Value can be
@@ -392,7 +393,7 @@ Prompt only if there are unsaved changes."
    '("afa47084cb0beb684281f480aa84dab7c9170b084423c7f87ba755b15f6776ef" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(realgud-python realgud consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
+   '(dap-mode realgud-python realgud consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
  '(zoom-ignored-major-modes '(python-mode))
  '(zoom-mode t nil (zoom)))
 
@@ -460,7 +461,7 @@ Prompt only if there are unsaved changes."
 (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
       :background "#ffd699" :foreground "black" :box nil)
 (set-face-attribute 'tab-line-tab-modified nil ;; modified tab in current window
-		    :background "#3B3B3B" :foreground "#ffd699" :box nil)
+ 		     :foreground "#CC9393" :box nil)
 
 (desktop-save-mode 1)
 
@@ -489,6 +490,7 @@ Prompt only if there are unsaved changes."
 ;;show file size in Megabyte
 (setq dired-listing-switches "-lhaG --group-directories-first")
 
+;; to navigate with first letter
 (require 'dired-explorer)
 (add-hook 'dired-mode-hook 'dired-explorer-mode)
 
@@ -556,6 +558,13 @@ Version: 2018-12-23 2022-04-07"
   (dired "/home/voit")
   (dired-other-window "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
 
+(defun my-dired-fullpath-filename ()
+  "Copy filename and full path"
+  (interactive)
+  (let ((current-prefix-arg 0))
+    (call-interactively 'dired-copy-filename-as-kill)))
+
+
 (global-set-key (kbd "<f8>") 'double-commander)
 (global-set-key (kbd "<f9>") 'double-commander-remote)
 (add-hook 'dired-mode-hook
@@ -570,11 +579,16 @@ Version: 2018-12-23 2022-04-07"
    (local-set-key (kbd "C-d") 'dired-do-delete)
    (local-set-key (kbd "<C-m>") 'dired-mark)  ;;somehow this special case needs to be in <>, because it conflicts with enter
    (local-set-key (kbd "C-g") 'revert-buffer)
-   (local-set-key (kbd "C-M-s") 'xah-dired-sort)))
+   (local-set-key (kbd "C-M-s") 'xah-dired-sort)
+   (local-set-key (kbd "C-M-n") 'dired-copy-filename-as-kill)
+   (local-set-key (kbd "C-M-p") 'my-dired-fullpath-filename)))
    ;;(local-set-key (kbd "<RET>") 'dired-find-file)))
    ;;(local-set-key (kbd "<RET>") 'dired-find-alternate-file))) ;; this command closes the buffer in the other window.... 
    ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
    
+
+
+
 
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 

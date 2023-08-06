@@ -67,8 +67,14 @@
 
 ;;code folding based on indentation
 (require 'yafolding)
-(define-key global-map (kbd "C-*") 'yafolding-hide-all)
-(define-key global-map (kbd "C-'") 'yafolding-show-all)
+(define-key global-map (kbd "M-'") 'yafolding-hide-all)
+(define-key global-map (kbd "M-'") 'yafolding-show-all)
+
+
+(if (display-graphic-p)
+    (scroll-bar-mode -1))    
+
+
 
 
 ;;try to control postition and size of Python Shell
@@ -97,29 +103,6 @@
             (zoom-mode -1)))
 
 
-;; (defun elpy-shell-send-statement-and-step ()
-;;   "Send current or next statement to Python shell and step.
-
-;; If the current line is part of a statement, sends this statement.
-;; Otherwise, skips forward to the next code line and sends the
-;; corresponding statement."
-;;   (interactive)
-;;   (elpy-shell--ensure-shell-running)
-;;   (elpy-shell--nav-beginning-of-statement)
-;;   ;; Make sure there is a statement to send
-;;   (unless (looking-at "[[:space:]]*$")
-;;     (unless elpy-shell-echo-input (elpy-shell--append-to-shell-output "\n"))
-;;     (let ((beg (save-excursion (beginning-of-line) (point)))
-;;           (end (progn (elpy-shell--nav-end-of-statement) (point))))
-;;       (unless (eq beg end)
-;;         (elpy-shell--flash-and-message-region beg end)
-;;         (elpy-shell--add-to-shell-history (buffer-substring beg end))
-;;         (elpy-shell--with-maybe-echo
-;;          (python-shell-send-string
-;;           (python-shell-buffer-substring beg end)))))
-;;     (python-nav-forward-statement)))
-
-
 ;;this works
 (defun python-send-and-step ()
   "Send the current line to the Python shell and move to the next line."
@@ -140,6 +123,8 @@
   (python-nav-forward-statement)
   )
 
+;; This function almost does the job. The only problem is, that if two lines are not separated
+;; by a blank line, then it sends both lines
 (defun python-send-and-step-smart ()
   "Send the current line to the Python shell and move to the next line."
   (interactive)
