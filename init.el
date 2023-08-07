@@ -122,6 +122,7 @@ Otherwise the startup will be very slow."
     pyvenv
     realgud
     company
+    quelpa
     )
   )
 
@@ -131,7 +132,7 @@ Otherwise the startup will be very slow."
           (unless (package-installed-p package)
             (package-install package)))
       myPackages)
-
+   
 ;; ===================================
 ;; Basic Customization
 ;; ===================================
@@ -148,16 +149,28 @@ Otherwise the startup will be very slow."
         gcmh-auto-idle-delay-factor 10
         gcmh-high-cons-threshold #x1000000)) ;; 16MB    
 
-
+;;Terminal specific settings
 (add-hook 'term-setup-hook
   (lambda ()
     (define-key function-key-map "\e[1;5A" [up])
     (define-key function-key-map "\e[1;5B" [down])
     (define-key function-key-map "\e[1;5C" [right])
     (define-key function-key-map "\e[1;5D" [left])
-    (global-company-mode)
     (global-set-key (kbd "M-*") 'hs-show-all)
     (global-set-key (kbd "M-'") 'hs-hide-all)))
+
+;; Make corfu work in terminal
+(quelpa '(popon :fetcher git
+                :url "https://codeberg.org/akib/emacs-popon.git"))
+
+(quelpa '(corfu-terminal
+          :fetcher git
+          :url "https://codeberg.org/akib/emacs-corfu-terminal.git"))
+
+(unless (display-graphic-p)
+  (corfu-terminal-mode +1))
+
+
 ;;Enable key help functions
 (require 'which-key)
 (which-key-mode)
@@ -221,9 +234,20 @@ Prompt only if there are unsaved changes."
 
 ;;ediff set vertical split as default-directory
 (custom-set-variables
- '(ediff-window-setup-function 'ediff-setup-windows-plain)
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("afa47084cb0beb684281f480aa84dab7c9170b084423c7f87ba755b15f6776ef" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
  '(ediff-diff-options "-w")
- '(ediff-split-window-function 'split-window-horizontally))
+ '(ediff-split-window-function 'split-window-horizontally)
+ '(ediff-window-setup-function 'ediff-setup-windows-plain)
+ '(ispell-dictionary nil)
+ '(package-selected-packages
+   '(quelpa dap-mode realgud-python realgud consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
+ '(zoom-ignored-major-modes '(python-mode))
+ '(zoom-mode t nil (zoom)))
 ;;==================================
 ;; Editing
 ;;==================================
@@ -390,18 +414,7 @@ Prompt only if there are unsaved changes."
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("afa47084cb0beb684281f480aa84dab7c9170b084423c7f87ba755b15f6776ef" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
- '(ispell-dictionary nil)
- '(package-selected-packages
-   '(dap-mode realgud-python realgud consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
- '(zoom-ignored-major-modes '(python-mode))
- '(zoom-mode t nil (zoom)))
+
 
  
 (custom-set-faces
@@ -418,9 +431,9 @@ Prompt only if there are unsaved changes."
 (defun day ()
   "Switches to day theme"
   (interactive)
-  (load-theme 'sanityinc-tomorrow-day t))
+  (load-theme 'adwaita))
 
-(defun dark ()
+(defun night ()
   "Switches to dark theme"
   (interactive)
   (load-theme 'zenburn t))
@@ -593,9 +606,6 @@ Version: 2018-12-23 2022-04-07"
    ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
    
 
-
-
-
 (add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
 (when (display-graphic-p)
@@ -624,7 +634,6 @@ Version: 2018-12-23 2022-04-07"
       (lambda()
         (local-set-key [C-tab] 'TeX-complete-symbol)))
 
-
 ;;=======================================
 ;;Corfu auto complete
 ;;=======================================
@@ -637,7 +646,7 @@ Version: 2018-12-23 2022-04-07"
   (corfu-preview-current nil)    ;; Disable current candidate preview
   (corfu-preselect 'prompt)      ;; Preselect the prompt
   (corfu-scroll-margin 5)        ;; Use scroll margin
-  :bind ("M-/" . completion-at-point)
+  :bind ("<backtab>" . completion-at-point)
   :hook ((after-init . global-corfu-mode)
          (global-corfu-mode . corfu-popupinfo-mode)))
 

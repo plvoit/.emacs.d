@@ -47,7 +47,7 @@
   ;; `completion-at-point' is often bound to M-TAB.
   ;;  (setq tab-always-indent 'complete))
   ;;changed this so I could use tab for indents in python mode
-  (setq tab-always-indent t))
+  (setq tab-always-indent 'complete))
 
 ;; Optionally use the `orderless' completion style.
 (use-package orderless
@@ -241,6 +241,7 @@ targets."
   :bind (:map minibuffer-mode-map
          ("C-c C-o" . embark-export))
   :hook (embark-collect-mode . consult-preview-at-point-mode))
+
 
 (provide 'init-completion)
 
