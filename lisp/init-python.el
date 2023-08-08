@@ -144,7 +144,8 @@
 (add-hook 'python-mode-hook
   (lambda ()
     (local-set-key (kbd "C-r") 'python-send-and-step-smart)))
-
+;;enable code folding
+(add-hook 'python-mode-hook #'hs-minor-mode)
 
 (global-set-key (kbd "<f5>") 'realgud:pdb)
 

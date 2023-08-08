@@ -122,7 +122,8 @@ Otherwise the startup will be very slow."
     pyvenv
     realgud
     company
-    quelpa
+    ;;quelpa ;;enable when new setup
+    nerd-icons-dired
     )
   )
 
@@ -159,13 +160,13 @@ Otherwise the startup will be very slow."
     (global-set-key (kbd "M-*") 'hs-show-all)
     (global-set-key (kbd "M-'") 'hs-hide-all)))
 
-;; Make corfu work in terminal
-(quelpa '(popon :fetcher git
-                :url "https://codeberg.org/akib/emacs-popon.git"))
+;; Make corfu work in terminal enable for new setup
+;; (quelpa '(popon :fetcher git
+;;                 :url "https://codeberg.org/akib/emacs-popon.git"))
 
-(quelpa '(corfu-terminal
-          :fetcher git
-          :url "https://codeberg.org/akib/emacs-corfu-terminal.git"))
+;; (quelpa '(corfu-terminal
+;;           :fetcher git
+;;           :url "https://codeberg.org/akib/emacs-corfu-terminal.git"))
 
 (unless (display-graphic-p)
   (corfu-terminal-mode +1))
@@ -245,7 +246,7 @@ Prompt only if there are unsaved changes."
  '(ediff-window-setup-function 'ediff-setup-windows-plain)
  '(ispell-dictionary nil)
  '(package-selected-packages
-   '(quelpa dap-mode realgud-python realgud consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
+   '(projectile quelpa dap-mode realgud-python realgud consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
  '(zoom-ignored-major-modes '(python-mode))
  '(zoom-mode t nil (zoom)))
 ;;==================================
@@ -322,6 +323,8 @@ Prompt only if there are unsaved changes."
 ;; It respects `doom-modeline-icon' and `doom-modeline-buffer-state-icon'.
 (setq doom-modeline-buffer-modification-icon t)
 
+;; Customize doom-modeline to show the environment version
+(setq doom-modeline-env-version t)
 
 ;;show minibuffer on the top
 ;;(require 'mini-frame)
@@ -438,11 +441,10 @@ Prompt only if there are unsaved changes."
   (interactive)
   (load-theme 'zenburn t))
 
-(defun conda ()
-  "Loads a Python conda environment"
-  (interactive)
-  (pyvenv-workon))
-
+(defun conda (environment)
+  "Loads a Python conda environment."
+  (interactive "sEnter the conda environment name: ")
+  (pyvenv-workon environment))
 
 
 ;; tramp tries to compress remote and decompress local. THis messes up python files. Change limits here
@@ -459,6 +461,8 @@ Prompt only if there are unsaved changes."
 ;;===================================================
 ;;Tab bars. Taken from https://amitp.blogspot.com/2020/06/emacs-prettier-tab-line.html
 ;;===================================================
+(global-tab-line-mode t)
+
 (global-tab-line-mode t)
 
 (require 'powerline)
@@ -610,7 +614,10 @@ Version: 2018-12-23 2022-04-07"
 
 (when (display-graphic-p)
   (require 'all-the-icons))
-
+;; doesnt work in terminal mode
+;; (require 'nerd-icons)
+;; (require 'nerd-icons-dired)
+;; (add-hook 'dired-mode-hook #'nerd-icons-dired-mode)
 ;;========================================
 ;; Own functions
 ;;========================================
