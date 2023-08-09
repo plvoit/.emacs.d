@@ -9,5 +9,6 @@
 !lisp/
 !site-lisp/*
 !lisp/*
-!site-lisp/ # etc...
-
+!site-lisp/
+!elpa/popon-20230703.102713/
+!elpa/corfu-terminal-20230703.102950/
