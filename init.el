@@ -123,7 +123,7 @@ Otherwise the startup will be very slow."
     realgud
     company
     ;;quelpa ;;enable when new setup
-    nerd-icons-dired
+    ;;nerd-icons-dired
     )
   )
 

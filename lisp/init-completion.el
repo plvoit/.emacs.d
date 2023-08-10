@@ -243,6 +243,7 @@ targets."
          ("C-c C-o" . embark-export))
   :hook (embark-collect-mode . consult-preview-at-point-mode))
 
+(lsp-headerline-breadcrumb-mode -1)
 
 (provide 'init-completion)
 
