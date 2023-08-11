@@ -145,7 +145,8 @@
   (lambda ()
     (local-set-key (kbd "C-r") 'python-send-and-step-smart)
     (local-set-key (kbd "<tab>") 'python-indent-shift-right)
-    (local-set-key (kbd "<backtab>") 'python-indent-shift-left)))
+    (local-set-key (kbd "<backtab>") 'python-indent-shift-left)
+    (local-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)))
 ;;enable code folding
 (add-hook 'python-mode-hook #'hs-minor-mode)
 

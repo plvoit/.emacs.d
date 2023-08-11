@@ -114,8 +114,8 @@
 
 
 ;; (require 'dap-python)
-;; ;; if you installed debugpy, you need to set this
-;; ;; https://github.com/emacs-lsp/dap-mode/issues/306
+;; ;; ;; if you installed debugpy, you need to set this
+;; ;; ;; https://github.com/emacs-lsp/dap-mode/issues/306
 ;; (setq dap-python-debugger 'debugpy)
 
 
