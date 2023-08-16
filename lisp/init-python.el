@@ -152,6 +152,9 @@
 
 (global-set-key (kbd "<f5>") 'realgud:pdb)
 
+(add-hook 'python-mode-hook (lambda () (eldoc-mode -1))) ;;hide documentation
+(add-hook 'python-mode-hook (lambda () (company-mode -1))) ;;something is switching it on but the corfu and company run at the same time
+
 (provide 'init-python)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
