@@ -51,7 +51,6 @@ Otherwise the startup will be very slow."
 (advice-add #'package-initialize :after #'add-subdirs-to-load-path)
 
 
-
 (update-load-path)
 
 ;; Adds the Melpa archive to the list of available repositories
@@ -121,9 +120,7 @@ Otherwise the startup will be very slow."
     powerline
     pyvenv
     realgud
-    company
-    ;;quelpa ;;enable when new setup
-    ;;nerd-icons-dired
+    quelpa ;;enable when new setup
     )
   )
 
@@ -234,21 +231,11 @@ Prompt only if there are unsaved changes."
 (guru-global-mode +1)
 
 ;;ediff set vertical split as default-directory
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("afa47084cb0beb684281f480aa84dab7c9170b084423c7f87ba755b15f6776ef" "443e2c3c4dd44510f0ea8247b438e834188dc1c6fb80785d83ad3628eadf9294" "f366d4bc6d14dcac2963d45df51956b2409a15b770ec2f6d730e73ce0ca5c8a7" "02f57ef0a20b7f61adce51445b68b2a7e832648ce2e7efb19d217b6454c1b644" default))
- '(ediff-diff-options "-w")
- '(ediff-split-window-function 'split-window-horizontally)
- '(ediff-window-setup-function 'ediff-setup-windows-plain)
- '(ispell-dictionary nil)
- '(package-selected-packages
-   '(projectile quelpa dap-mode realgud-python realgud consult-eglot consult-lsp csv-mode doom-themes use-package corfu cape better-defaults))
- '(zoom-ignored-major-modes '(python-mode))
- '(zoom-mode t nil (zoom)))
+;; (custom-set-variables
+;;  '(ediff-window-setup-function 'ediff-setup-windows-plain)
+;;  '(ediff-diff-options "-w")
+;;  '(ediff-split-window-function 'split-window-horizontally))
+
 ;;==================================
 ;; Editing
 ;;==================================
@@ -417,15 +404,6 @@ Prompt only if there are unsaved changes."
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 
-
-
- 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
 ;;===================================================
 ;;Custom functions
 ;;===================================================
