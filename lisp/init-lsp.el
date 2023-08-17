@@ -183,7 +183,7 @@
 ;; (use-package lsp-java
 ;;   :hook ((java-mode java-ts-mode jdee-mode) . (lambda () (require 'lsp-java)))))
 
-
+(lsp-headerline-breadcrumb-mode -1)
 (provide 'init-lsp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
