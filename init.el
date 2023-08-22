@@ -198,6 +198,7 @@ Otherwise the startup will be very slow."
 ;; make tab key do indent first then completion.
 (setq-default tab-always-indent 'complete)
 (setq delete-by-moving-to-trash t)
+(setq make-backup-files nil)
 
 (tooltip-mode nil)
 (setq show-help-function nil)
@@ -520,7 +521,7 @@ Version: 2018-12-23 2022-04-07"
 (defun hpc ()
   "Opens the work folder no the HPC by SSH with dired."
   (interactive)
-  (dired "/ssh:voit@login/work/voit"))
+  (dired "/ssh:voit@login1.hpc.uni-potsdam.de:/work/voit"))
 
 
 (defun my-dired-fullpath-filename ()
