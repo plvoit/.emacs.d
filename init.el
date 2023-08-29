@@ -200,6 +200,8 @@ Otherwise the startup will be very slow."
 (setq delete-by-moving-to-trash t)
 (setq make-backup-files nil)
 
+(setq doc-view-continuous 1)
+
 (tooltip-mode nil)
 (setq show-help-function nil)
 

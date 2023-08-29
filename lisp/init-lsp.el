@@ -184,6 +184,19 @@
 ;;   :hook ((java-mode java-ts-mode jdee-mode) . (lambda () (require 'lsp-java)))))
 
 (lsp-headerline-breadcrumb-mode -1)
+
+;; change maximum linewidth from 80 to 120 character
+;; this is stuff from chat gpt but it doesn't seems to work
+(setq lsp-pyls-plugins-pycodestyle-max-line-length 120)
+(setq lsp-pyls-plugins-black-enabled t)
+(setq lsp-pyls-plugins-black-args '("--line-length" "120"))
+
+(setq lsp-eldoc-enable-hover nil)
+(setq lsp-completion-provider :none)
+
+
+(setq lsp-pylsp-plugins-flake8-max-line-length 120)
+
 (provide 'init-lsp)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
