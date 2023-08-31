@@ -67,8 +67,8 @@
 
 ;;code folding based on indentation
 (require 'yafolding)
-(define-key global-map (kbd "M-'") 'yafolding-hide-all)
-(define-key global-map (kbd "M-'") 'yafolding-show-all)
+(define-key global-map (kbd "C-c f") 'hs-hide-all)
+(define-key global-map (kbd "C-c u") 'hs-show-all)
 
 
 (if (display-graphic-p)
