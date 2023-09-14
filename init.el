@@ -260,6 +260,8 @@ Prompt only if there are unsaved changes."
 
 (global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
 
+(global-set-key (kbd "C-c l") 'goto-line)
+
 ;; ===================================
 ;; Dashboard
 ;; ===================================
