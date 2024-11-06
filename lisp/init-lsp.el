@@ -158,6 +158,10 @@
   :init (when (executable-find "python3")
           (setq lsp-pyright-python-executable-cmd "python3")))
 
+;; Formatting of Python Scripts
+(setq lsp-pyright-formatting-provider "yapf")  ;; Or "yapf" if you prefer YAPF
+(setq lsp-pyright-formatting-options '(:lineLength 120))
+
 ;; ;; C/C++/Objective-C
 ;; (use-package ccls
 ;;   :hook ((c-mode c++-mode objc-mode cuda-mode) . (lambda () (require 'ccls)))
