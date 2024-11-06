@@ -60,6 +60,9 @@
 ;; Python Settings
 ;;===============================
 
+;;set auto format wider
+(setq blacken-line-length 120)
+
 (if (equal system-name "n-hpc-login1")
     (setenv "WORKON_HOME" "/home/voit/.conda/envs/")
     (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))

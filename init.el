@@ -178,7 +178,7 @@ Otherwise the startup will be very slow."
 
 (setq inhibit-startup-message t)    ;; Hide the startup message
 (menu-bar-mode -1)
-(global-linum-mode 0)               ;; Disable line numbers globally
+;;(global-linum-mode 0)               ;; Disable line numbers globally
 
 ;; also in lisp mode
 (add-hook  'emacs-lisp-mode-hook #'(lambda()(display-line-numbers-mode -1)))
@@ -631,8 +631,7 @@ Version: 2018-12-23 2022-04-07"
 ;;rgrep
 ;; vertico mode will always complete the expression with the first suggestion
 ;; to proceed without completion, press M+Enter (Ret).This way one can search with wildcards
-(
- custom-set-variables
+(custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
