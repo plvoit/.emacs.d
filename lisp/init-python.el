@@ -149,8 +149,12 @@
     (local-set-key (kbd "C-r") 'python-send-and-step-smart)
     (local-set-key (kbd "<tab>") 'python-indent-shift-right)
     (local-set-key (kbd "<backtab>") 'python-indent-shift-left)
-    (local-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)))
-;;enable code folding
+    (local-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+    (local-set-key (kbd "C-c <left>") 'python-indent-shift-left)
+    (local-set-key (kbd "C-c <right>") 'python-indent-shift-right)
+    (local-set-key (kbd "C-c b") 'flymake-show-buffer-diagnostics)))
+
+;; Enable code folding
 (add-hook 'python-mode-hook #'hs-minor-mode)
 
 (global-set-key (kbd "<f5>") 'realgud:pdb)

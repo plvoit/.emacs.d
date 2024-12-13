@@ -145,6 +145,10 @@
 ;;        (setq dap-python-executable "python3")))
 
 ;; Python
+;;wider lines for auto-formatting (80 is the default)
+;; this has no effect
+(setq lsp-pylsp-plugins-flake8-max-line-length 120)
+
 (use-package lsp-pyright
   :preface
   ;; Use yapf to format
@@ -157,6 +161,10 @@
                                            (add-hook 'after-save-hook #'lsp-pyright-format-buffer t t))))
   :init (when (executable-find "python3")
           (setq lsp-pyright-python-executable-cmd "python3")))
+
+;; Formatting of Python Scripts
+(setq lsp-pyright-formatting-provider "yapf")  ;; Or "yapf" if you prefer YAPF
+(setq lsp-pyright-formatting-options '(:lineLength 120))
 
 ;; ;; C/C++/Objective-C
 ;; (use-package ccls
