@@ -122,10 +122,7 @@ Otherwise the startup will be very slow."
     pyvenv
     realgud
     quelpa ;;enable when new setup
-<<<<<<< HEAD
-=======
     dired-sidebar
->>>>>>> main
     )
   )
 
@@ -661,10 +658,6 @@ Ignores capitalization."
 ;;=======================================
 ;;Neotree sidebar
 ;;=======================================
-<<<<<<< HEAD
-=======
-
->>>>>>> main
 ;; Bind the function to Alt-1
 ;;(global-set-key (kbd "M-1") 'neotree-toggle)
 ;;(with-eval-after-load 'neotree
@@ -702,11 +695,8 @@ Ignores capitalization."
  '(corfu-preselect 'first)
  '(lsp-headerline-breadcrumb-enable nil)
  '(package-selected-packages
-<<<<<<< HEAD
-   '(gnu-elpa-keyring-update neotree csv-mode poetry consult-eglot consult-lsp quelpa realgud pyvenv powerline lsp-pyright lsp-mode eglot which-key doom-themes gcmh embark-consult embark consult-flyspell consult vertico-posframe orderless vertico marginalia use-package cape corfu mini-frame company popper guru-mode dashboard doom-modeline auctex yafolding dired-explorer all-the-icons-dired shackle all-the-icons magit flycheck color-theme-sanityinc-tomorrow zenburn-theme expand-region multiple-cursors markdown-mode zoom better-defaults corfu-terminal)))
-=======
    '(dired-sidebar csv-mode poetry consult-eglot consult-lsp quelpa realgud pyvenv powerline lsp-pyright lsp-mode eglot which-key doom-themes gcmh embark-consult embark consult-flyspell consult vertico-posframe orderless vertico marginalia use-package cape corfu mini-frame company popper guru-mode dashboard doom-modeline auctex yafolding dired-explorer all-the-icons-dired shackle all-the-icons magit flycheck color-theme-sanityinc-tomorrow zenburn-theme expand-region multiple-cursors markdown-mode zoom better-defaults corfu-terminal)))
->>>>>>> main
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
