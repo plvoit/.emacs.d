@@ -122,7 +122,7 @@ Otherwise the startup will be very slow."
     pyvenv
     realgud
     quelpa ;;enable when new setup
-    neotree
+    dired-sidebar
     )
   )
 
@@ -543,7 +543,8 @@ Version: 2018-12-23 2022-04-07"
    (local-set-key [f7] 'dired-create-directory)
    (local-set-key (kbd "<tab>") 'other-window)
    (local-set-key (kbd "C-b") 'bookmark-jump)
-   (local-set-key (kbd "<DEL>") 'dired-up-directory)
+   ;;(local-set-key (kbd "<DEL>") 'dired-up-directory) ;; a bit stupid that for dired-sidebar its "-", oterwise there is a weird conflict
+   ;;(local-set-key (kbd "-") 'dired-up-directory)
    (local-set-key (kbd "C-o") 'dired-find-file-other-window)
    (local-set-key (kbd "C-d") 'dired-do-delete)
    (local-set-key (kbd "<C-m>") 'dired-mark)  ;;somehow this special case needs to be in <>, because it conflicts with enter
@@ -556,10 +557,10 @@ Version: 2018-12-23 2022-04-07"
    ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
    
 
-(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
+;;(add-hook 'dired-mode-hook 'all-the-icons-dired-mode)
 
-(when (display-graphic-p)
-  (require 'all-the-icons))
+;;(when (display-graphic-p)
+;;  (require 'all-the-icons))
 ;; doesnt work in terminal mode
 ;; (require 'nerd-icons)
 ;; (require 'nerd-icons-dired)
@@ -626,22 +627,58 @@ Version: 2018-12-23 2022-04-07"
 (require 'init-python)
 (require 'init-double-commander)
 
+
+
+
+;;=======================================
+;;dired sidebar
+;;=======================================
+
+(add-to-list 'load-path "path from pwd")
+(require 'dired-sidebar)
+(global-set-key (kbd "M-1") 'dired-sidebar-toggle-sidebar)
+(setq dired-sidebar-theme 'none)
+
+;; Enable jump-to-letter functionality for all printable keys in dired-sidebar
+(defun my/dired-sidebar-jump-to-letter ()
+  "Jump to the first file or directory in dired-sidebar starting with the letter pressed.
+Ignores capitalization."
+  (interactive)
+  (let* ((char (read-char "Jump to: ")) ;; Read a single character
+         (case-fold-search t)          ;; Ignore case
+         (search-regexp (format "^\\s-*%c" (upcase char)))) ;; Build the search regex
+    (goto-char (point-min)) ;; Start from the beginning
+    (unless (re-search-forward search-regexp nil t)
+      (message "No file or directory found starting with '%c'" char))))
+;; Hook it into dired-sidebar mode
+(with-eval-after-load 'dired-sidebar
+  (add-hook 'dired-sidebar-mode-hook #'my/dired-sidebar-activate-jump-to-letter))
 ;;=======================================
 ;;Neotree sidebar
 ;;=======================================
-;; Define a function to toggle neotree with Alt-1
-(defun toggle-neotree ()
-  "Toggle the visibility of neotree."
-  (interactive)
-  (if (neo-global--window-exists-p)
-      (neotree-hide)    ;; Hide neotree if it's already visible
-    (neotree-show)))   ;; Show neotree if it's not visible
 
 ;; Bind the function to Alt-1
-(global-set-key (kbd "M-1") 'neotree-toggle)
+;;(global-set-key (kbd "M-1") 'neotree-toggle)
+;;(with-eval-after-load 'neotree
+;;  (define-key neotree-mode-map (kbd "<backspace>") 'neotree-select-up-node))
+;;
 
+;;=======================================
+;;treemacs sidebar
+;;=======================================
 
-
+;;(use-package treemacs
+;;  :ensure t
+;;  :defer t
+;;  :config
+;;  (setq treemacs-collapse-dirs              (if treemacs-python-executable 3 0)
+;;        treemacs-follow-after-init          t
+;;        treemacs-file-follow-delay          0.2)
+;;  :bind
+;;  (:map global-map
+;;        ("M-0"       . treemacs-select-window)
+;;        ("C-x t t"   . treemacs)
+;;        ("C-x t 1"   . treemacs-delete-other-windows)))
 ;;=================================================
 ;;Notes
 ;;=================================================
@@ -657,7 +694,7 @@ Version: 2018-12-23 2022-04-07"
  '(corfu-preselect 'first)
  '(lsp-headerline-breadcrumb-enable nil)
  '(package-selected-packages
-   '(neotree csv-mode poetry consult-eglot consult-lsp quelpa realgud pyvenv powerline lsp-pyright lsp-mode eglot which-key doom-themes gcmh embark-consult embark consult-flyspell consult vertico-posframe orderless vertico marginalia use-package cape corfu mini-frame company popper guru-mode dashboard doom-modeline auctex yafolding dired-explorer all-the-icons-dired shackle all-the-icons magit flycheck color-theme-sanityinc-tomorrow zenburn-theme expand-region multiple-cursors markdown-mode zoom better-defaults corfu-terminal)))
+   '(dired-sidebar csv-mode poetry consult-eglot consult-lsp quelpa realgud pyvenv powerline lsp-pyright lsp-mode eglot which-key doom-themes gcmh embark-consult embark consult-flyspell consult vertico-posframe orderless vertico marginalia use-package cape corfu mini-frame company popper guru-mode dashboard doom-modeline auctex yafolding dired-explorer all-the-icons-dired shackle all-the-icons magit flycheck color-theme-sanityinc-tomorrow zenburn-theme expand-region multiple-cursors markdown-mode zoom better-defaults corfu-terminal)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
