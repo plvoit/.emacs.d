@@ -122,7 +122,6 @@ Otherwise the startup will be very slow."
     pyvenv
     realgud
     quelpa ;;enable when new setup
-    neotree
     )
   )
 
@@ -132,6 +131,8 @@ Otherwise the startup will be very slow."
           (unless (package-installed-p package)
             (package-install package)))
       myPackages)
+
+(add-to-list 'load-path "/home/voit/.emacs.d/emacs-neotree")
    
 ;; ===================================
 ;; Basic Customization
@@ -629,14 +630,6 @@ Version: 2018-12-23 2022-04-07"
 ;;=======================================
 ;;Neotree sidebar
 ;;=======================================
-;; Define a function to toggle neotree with Alt-1
-(defun toggle-neotree ()
-  "Toggle the visibility of neotree."
-  (interactive)
-  (if (neo-global--window-exists-p)
-      (neotree-hide)    ;; Hide neotree if it's already visible
-    (neotree-show)))   ;; Show neotree if it's not visible
-
 ;; Bind the function to Alt-1
 (global-set-key (kbd "M-1") 'neotree-toggle)
 
@@ -657,7 +650,7 @@ Version: 2018-12-23 2022-04-07"
  '(corfu-preselect 'first)
  '(lsp-headerline-breadcrumb-enable nil)
  '(package-selected-packages
-   '(neotree csv-mode poetry consult-eglot consult-lsp quelpa realgud pyvenv powerline lsp-pyright lsp-mode eglot which-key doom-themes gcmh embark-consult embark consult-flyspell consult vertico-posframe orderless vertico marginalia use-package cape corfu mini-frame company popper guru-mode dashboard doom-modeline auctex yafolding dired-explorer all-the-icons-dired shackle all-the-icons magit flycheck color-theme-sanityinc-tomorrow zenburn-theme expand-region multiple-cursors markdown-mode zoom better-defaults corfu-terminal)))
+   '(gnu-elpa-keyring-update neotree csv-mode poetry consult-eglot consult-lsp quelpa realgud pyvenv powerline lsp-pyright lsp-mode eglot which-key doom-themes gcmh embark-consult embark consult-flyspell consult vertico-posframe orderless vertico marginalia use-package cape corfu mini-frame company popper guru-mode dashboard doom-modeline auctex yafolding dired-explorer all-the-icons-dired shackle all-the-icons magit flycheck color-theme-sanityinc-tomorrow zenburn-theme expand-region multiple-cursors markdown-mode zoom better-defaults corfu-terminal)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
