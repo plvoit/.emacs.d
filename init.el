@@ -133,7 +133,6 @@ Otherwise the startup will be very slow."
             (package-install package)))
       myPackages)
 
-(add-to-list 'load-path "/home/voit/.emacs.d/emacs-neotree")
    
 ;; ===================================
 ;; Basic Customization
@@ -638,10 +637,14 @@ Version: 2018-12-23 2022-04-07"
 
 (add-to-list 'load-path "path from pwd")
 (require 'dired-sidebar)
-(global-set-key (kbd "M-1") 'dired-sidebar-toggle-sidebar)
+(with-eval-after-load 'dired-sidebar
+  ;; Unbind "^" in `dired-sidebar-mode-map`
+  (define-key dired-sidebar-mode-map (kbd "^") nil))
+(global-set-key (kbd "^") 'dired-sidebar-toggle-sidebar)
 (setq dired-sidebar-theme 'none)
 
 ;; Enable jump-to-letter functionality for all printable keys in dired-sidebar
+;; this works just if we have no Icons for dired
 (defun my/dired-sidebar-jump-to-letter ()
   "Jump to the first file or directory in dired-sidebar starting with the letter pressed.
 Ignores capitalization."
