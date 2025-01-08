@@ -23,7 +23,7 @@
 ;;   ;; Suppress file handlers operations at startup
 ;;   ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
 ;;   (let ((old-value file-name-handler-alist))
-2;;     (setq file-name-handler-alist nil)
+;;     (setq file-name-handler-alist nil)
 ;;     (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
 ;;    (add-hook 'emacs-startup-hook
 ;;              (lambda ()
@@ -640,7 +640,31 @@ Version: 2018-12-23 2022-04-07"
 (with-eval-after-load 'dired-sidebar
   ;; Unbind "^" in `dired-sidebar-mode-map`
   (define-key dired-sidebar-mode-map (kbd "^") nil))
-(global-set-key (kbd "^") 'dired-sidebar-toggle-sidebar)
+;;(global-set-key (kbd "^") 'dired-sidebar-toggle-sidebar)
+;; this should make the cursor automatically jump to the sidebar but it does not work....
+(global-set-key (kbd "^")
+                (lambda ()
+                  (interactive)
+                  (let ((sidebar-window (seq-find
+                                         (lambda (win)
+                                           (with-current-buffer (window-buffer win)
+                                             (derived-mode-p 'dired-sidebar-mode)))
+                                         (window-list))))
+                    (if sidebar-window
+                        ;; Sidebar is open: close it and kill the buffer
+                        (let ((sidebar-buffer (window-buffer sidebar-window)))
+                          (delete-window sidebar-window)
+                          (kill-buffer sidebar-buffer))
+                      ;; Sidebar is not open: toggle it on and move focus to it
+                      (dired-sidebar-toggle-sidebar)
+                      (let ((new-sidebar-window (seq-find
+                                                 (lambda (win)
+                                                   (with-current-buffer (window-buffer win)
+                                                     (derived-mode-p 'dired-sidebar-mode)))
+                                                 (window-list))))
+                        (when new-sidebar-window
+                          (select-window new-sidebar-window)))))))
+
 (setq dired-sidebar-theme 'none)
 
 ;; Enable jump-to-letter functionality for all printable keys in dired-sidebar
