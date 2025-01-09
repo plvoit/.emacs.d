@@ -640,30 +640,16 @@ Version: 2018-12-23 2022-04-07"
 (with-eval-after-load 'dired-sidebar
   ;; Unbind "^" in `dired-sidebar-mode-map`
   (define-key dired-sidebar-mode-map (kbd "^") nil))
+
 ;;(global-set-key (kbd "^") 'dired-sidebar-toggle-sidebar)
-;; this should make the cursor automatically jump to the sidebar but it does not work....
-(global-set-key (kbd "^")
-                (lambda ()
-                  (interactive)
-                  (let ((sidebar-window (seq-find
-                                         (lambda (win)
-                                           (with-current-buffer (window-buffer win)
-                                             (derived-mode-p 'dired-sidebar-mode)))
-                                         (window-list))))
-                    (if sidebar-window
-                        ;; Sidebar is open: close it and kill the buffer
-                        (let ((sidebar-buffer (window-buffer sidebar-window)))
-                          (delete-window sidebar-window)
-                          (kill-buffer sidebar-buffer))
-                      ;; Sidebar is not open: toggle it on and move focus to it
-                      (dired-sidebar-toggle-sidebar)
-                      (let ((new-sidebar-window (seq-find
-                                                 (lambda (win)
-                                                   (with-current-buffer (window-buffer win)
-                                                     (derived-mode-p 'dired-sidebar-mode)))
-                                                 (window-list))))
-                        (when new-sidebar-window
-                          (select-window new-sidebar-window)))))))
+(defun my/dired-sidebar-toggle-and-jump ()
+  "Toggle the dired-sidebar and jump to it if it's open."
+  (interactive)
+  (dired-sidebar-toggle-sidebar)
+  (when (bound-and-true-p dired-sidebar-mode)
+    (dired-sidebar-jump-to-sidebar)))
+
+(global-set-key (kbd "^") 'my/dired-sidebar-toggle-and-jump)
 
 (setq dired-sidebar-theme 'none)
 
