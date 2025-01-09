@@ -23,7 +23,7 @@
 ;;   ;; Suppress file handlers operations at startup
 ;;   ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
 ;;   (let ((old-value file-name-handler-alist))
-2;;     (setq file-name-handler-alist nil)
+;;     (setq file-name-handler-alist nil)
 ;;     (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
 ;;    (add-hook 'emacs-startup-hook
 ;;              (lambda ()
@@ -132,6 +132,7 @@ Otherwise the startup will be very slow."
           (unless (package-installed-p package)
             (package-install package)))
       myPackages)
+
    
 ;; ===================================
 ;; Basic Customization
@@ -636,10 +637,24 @@ Version: 2018-12-23 2022-04-07"
 
 (add-to-list 'load-path "path from pwd")
 (require 'dired-sidebar)
-(global-set-key (kbd "^") 'dired-sidebar-toggle-sidebar)
+(with-eval-after-load 'dired-sidebar
+  ;; Unbind "^" in `dired-sidebar-mode-map`
+  (define-key dired-sidebar-mode-map (kbd "^") nil))
+
+;;(global-set-key (kbd "^") 'dired-sidebar-toggle-sidebar)
+(defun my/dired-sidebar-toggle-and-jump ()
+  "Toggle the dired-sidebar and jump to it if it's open."
+  (interactive)
+  (dired-sidebar-toggle-sidebar)
+  (when (bound-and-true-p dired-sidebar-mode)
+    (dired-sidebar-jump-to-sidebar)))
+
+(global-set-key (kbd "^") 'my/dired-sidebar-toggle-and-jump)
+
 (setq dired-sidebar-theme 'none)
 
 ;; Enable jump-to-letter functionality for all printable keys in dired-sidebar
+;; this works just if we have no Icons for dired
 (defun my/dired-sidebar-jump-to-letter ()
   "Jump to the first file or directory in dired-sidebar starting with the letter pressed.
 Ignores capitalization."
@@ -656,7 +671,6 @@ Ignores capitalization."
 ;;=======================================
 ;;Neotree sidebar
 ;;=======================================
-
 ;; Bind the function to Alt-1
 ;;(global-set-key (kbd "M-1") 'neotree-toggle)
 ;;(with-eval-after-load 'neotree
@@ -695,6 +709,7 @@ Ignores capitalization."
  '(lsp-headerline-breadcrumb-enable nil)
  '(package-selected-packages
    '(dired-sidebar csv-mode poetry consult-eglot consult-lsp quelpa realgud pyvenv powerline lsp-pyright lsp-mode eglot which-key doom-themes gcmh embark-consult embark consult-flyspell consult vertico-posframe orderless vertico marginalia use-package cape corfu mini-frame company popper guru-mode dashboard doom-modeline auctex yafolding dired-explorer all-the-icons-dired shackle all-the-icons magit flycheck color-theme-sanityinc-tomorrow zenburn-theme expand-region multiple-cursors markdown-mode zoom better-defaults corfu-terminal)))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
