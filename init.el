@@ -636,7 +636,7 @@ Version: 2018-12-23 2022-04-07"
 
 (add-to-list 'load-path "path from pwd")
 (require 'dired-sidebar)
-(global-set-key (kbd "M-1") 'dired-sidebar-toggle-sidebar)
+(global-set-key (kbd "^") 'dired-sidebar-toggle-sidebar)
 (setq dired-sidebar-theme 'none)
 
 ;; Enable jump-to-letter functionality for all printable keys in dired-sidebar
