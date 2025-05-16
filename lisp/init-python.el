@@ -67,6 +67,10 @@
     (setenv "WORKON_HOME" "/home/voit/.conda/envs/")
     (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))
 
+(if (string-prefix-p "levante" system-name)
+    (setenv "WORKON_HOME" "/home/b/b383182/.conda/envs/")
+  (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))
+
 
 ;;code folding based on indentation
 (require 'yafolding)
