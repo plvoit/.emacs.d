@@ -420,7 +420,9 @@ Prompt only if there are unsaved changes."
 (defun day ()
   "Switches to day theme"
   (interactive)
-  (load-theme 'adwaita))
+  (load-theme 'adwaita)
+  (set-cursor-color "#63c7ea")) ;; replace with your desired color
+
 
 (defun night ()
   "Switches to dark theme"
