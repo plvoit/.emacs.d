@@ -224,11 +224,11 @@ Prompt only if there are unsaved changes."
      (interactive "P")
      (pcase (or (car prefix) 0)
        ;; C-x k     ⇒ Kill current buffer & window
-       (0  (kill-this-buffer)
+       (0  (kill-buffer (current-buffer))
            (unless (one-window-p) (delete-window)))
        ;; C-u C-x k ⇒ Kill OTHER window and its buffer
        (4  (other-window 1)
-           (kill-this-buffer)
+           (kill-buffer (current-buffer))
            (unless (one-window-p) (delete-window)))
        ;; C-u C-u C-x C-k ⇒ Kill all other buffers and windows
        (16   (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
@@ -349,7 +349,8 @@ Prompt only if there are unsaved changes."
                 "^\\*vterm.*\\*$"  vterm-mode  ;vterm as a popup
                 )))
 
-(add-to-list 'vterm-keymap-exceptions "C-o")
+(with-eval-after-load 'vterm
+  (add-to-list 'vterm-keymap-exceptions "C-o"))
 
 
 ;; (defun popper-toggle-latest-modified (&optional arg)									
@@ -631,6 +632,7 @@ Version: 2018-12-23 2022-04-07"
 (require 'init-lsp)
 (require 'init-python)
 (require 'init-double-commander)
+(require 'openspec)
 
 
 
