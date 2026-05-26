@@ -34,7 +34,7 @@
   :hook ((prog-mode . (lambda ()
                         (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
                           (eglot-ensure))))
-         ((markdown-mode yaml-mode yaml-ts-mode) . eglot-ensure))
+         ((yaml-mode yaml-ts-mode) . eglot-ensure))
   :config
   (use-package consult-eglot
     :bind (:map eglot-mode-map
@@ -56,7 +56,7 @@
    :hook ((prog-mode . (lambda ()
                          (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
                            (lsp-deferred))))
-          ((markdown-mode yaml-mode yaml-ts-mode) . lsp-deferred)
+          ((yaml-mode yaml-ts-mode) . lsp-deferred)
           (lsp-mode . (lambda ()
                         ;; Integrate `which-key'
                         (lsp-enable-which-key-integration)

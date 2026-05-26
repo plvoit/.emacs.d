@@ -271,7 +271,7 @@ Prompt only if there are unsaved changes."
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 ;; Set the title
-(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors\nC-x 0 = delete window\nC-x C-j = dired jump to folder of current buffer, C-M-n = copy filename, C-M-p = copy filename with fullpath\nC-M n(or p) = navigate parenthesis\nM-y = cycle through kills, C-x C-x = jump point to last position?")
+(setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors\nC-x 0 = delete window\nC-x C-j = dired jump to folder of current buffer, C-M-n = copy filename, C-M-p = copy filename with fullpath\nC-M n(or p) = navigate parenthesis\nM-y = cycle through kills, C-x C-x = jump point to last position?\nC-c m = toggle markdown rendered preview / raw text\nC-c c = start Claude")
 ;; Set the banner
 (setq dashboard-startup-banner 'logo)
 ;; Value can be
@@ -348,6 +348,8 @@ Prompt only if there are unsaved changes."
                 "^\\*term.*\\*$"   term-mode   ;term as a popup
                 "^\\*vterm.*\\*$"  vterm-mode  ;vterm as a popup
                 )))
+
+(add-to-list 'vterm-keymap-exceptions "C-o")
 
 
 ;; (defun popper-toggle-latest-modified (&optional arg)									
@@ -632,6 +634,63 @@ Version: 2018-12-23 2022-04-07"
 
 
 
+;;=======================================
+;; agent-shell (LLM agent via ACP protocol)
+;;=======================================
+(add-to-list 'exec-path "/home/voit/.local/bin")
+(add-to-list 'exec-path "/snap/bin")
+(setenv "PATH" (concat "/home/voit/.local/bin:/snap/bin:" (getenv "PATH")))
+(use-package shell-maker :ensure t)
+(use-package acp :ensure t)
+(use-package agent-shell
+  :ensure t
+  :after (shell-maker acp))
+
+(global-set-key (kbd "C-c c") 'agent-shell-anthropic-start-claude-code)
+
+(setq markdown-command "pandoc")
+
+(defvar my/markdown-skip-preview nil
+  "When non-nil, markdown-mode-hook skips opening the rendered preview.")
+
+(defvar-local my/markdown-source-file nil
+  "In an eww preview buffer, the path of the originating markdown file.")
+
+(defun my/markdown-open-as-preview ()
+  "Render current markdown file with pandoc and display in eww. Kill the source buffer."
+  (unless my/markdown-skip-preview
+    (let* ((md-buf (current-buffer))
+           (md-file (buffer-file-name))
+           (tmp-html (make-temp-file "md-preview-" nil ".html")))
+      (when md-file
+        (call-process "pandoc" nil nil nil
+                      "-f" "markdown" "-t" "html5" "--standalone"
+                      md-file "-o" tmp-html)
+        (let ((display-buffer-overriding-action '(display-buffer-same-window)))
+          (eww-open-file tmp-html))
+        (setq-local my/markdown-source-file md-file)
+        (run-with-timer 0 nil
+          (lambda ()
+            (when (buffer-live-p md-buf)
+              (kill-buffer md-buf))))))))
+
+(defun my/markdown-toggle ()
+  "Toggle between rendered markdown preview (eww) and raw markdown source."
+  (interactive)
+  (cond
+   ((and (derived-mode-p 'eww-mode) my/markdown-source-file)
+    (let ((md-file my/markdown-source-file)
+          (eww-buf (current-buffer)))
+      (let ((my/markdown-skip-preview t))
+        (find-file md-file))
+      (kill-buffer eww-buf)))
+   ((derived-mode-p 'markdown-mode)
+    (my/markdown-open-as-preview))
+   (t
+    (message "Not in a markdown preview or source buffer"))))
+
+(add-hook 'markdown-mode-hook 'my/markdown-open-as-preview)
+(global-set-key (kbd "C-c m") 'my/markdown-toggle)
 
 ;;=======================================
 ;;dired sidebar
@@ -710,7 +769,7 @@ Ignores capitalization."
  '(corfu-preselect 'first)
  '(lsp-headerline-breadcrumb-enable nil)
  '(package-selected-packages
-   '(dired-sidebar csv-mode poetry consult-eglot consult-lsp quelpa realgud pyvenv powerline lsp-pyright lsp-mode eglot which-key doom-themes gcmh embark-consult embark consult-flyspell consult vertico-posframe orderless vertico marginalia use-package cape corfu mini-frame company popper guru-mode dashboard doom-modeline auctex yafolding dired-explorer all-the-icons-dired shackle all-the-icons magit flycheck color-theme-sanityinc-tomorrow zenburn-theme expand-region multiple-cursors markdown-mode zoom better-defaults corfu-terminal)))
+   '(gptel dired-sidebar csv-mode poetry consult-eglot consult-lsp quelpa realgud pyvenv powerline lsp-pyright lsp-mode eglot which-key doom-themes gcmh embark-consult embark consult-flyspell consult vertico-posframe orderless vertico marginalia use-package cape corfu mini-frame company popper guru-mode dashboard doom-modeline auctex yafolding dired-explorer all-the-icons-dired shackle all-the-icons magit flycheck color-theme-sanityinc-tomorrow zenburn-theme expand-region multiple-cursors markdown-mode zoom better-defaults corfu-terminal)))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
