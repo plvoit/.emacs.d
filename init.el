@@ -1,6 +1,27 @@
 ;; .emacs.d/init.el
 
 ;; ===================================
+;; straight.el bootstrap
+;; ===================================
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(straight-use-package 'use-package)
+
+;; ===================================
 ;; MELPA Package Support
 ;; ===================================
 ;; Enables basic packaging support
@@ -36,7 +57,7 @@
 ;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
 (defun update-load-path (&rest _)
   "Update `load-path'."
-  (dolist (dir '("lisp"))
+  (dolist (dir '("lisp" "site-lisp"))
     (push (expand-file-name dir user-emacs-directory) load-path)))
 
 (defun add-subdirs-to-load-path (&rest _)
@@ -149,6 +170,18 @@ Otherwise the startup will be very slow."
   (setq gcmh-idle-delay 'auto
         gcmh-auto-idle-delay-factor 10
         gcmh-high-cons-threshold #x1000000)) ;; 16MB    
+
+;;=======================================
+;; eat terminal emulator (via straight.el)
+;;=======================================
+(use-package eat
+  :straight (:host codeberg :repo "akib/emacs-eat"
+             :files ("*.el" ("term" "term/*.el") "*.texi"
+                     "*.ti" ("terminfo/e" "terminfo/e/*")
+                     ("terminfo/65" "terminfo/65/*")
+                     ("integration" "integration/*")
+                     (:exclude ".dir-locals.el" "*-tests.el")))
+  :hook (eshell-load . eat-eshell-mode))
 
 ;;Terminal specific settings
 (add-hook 'term-setup-hook
@@ -346,7 +379,6 @@ Prompt only if there are unsaved changes."
               '("^\\*eshell.*\\*$" eshell-mode ;eshell as a popup
                 "^\\*shell.*\\*$"  shell-mode  ;shell as a popup
                 "^\\*term.*\\*$"   term-mode   ;term as a popup
-                "^\\*vterm.*\\*$"  vterm-mode  ;vterm as a popup
                 )))
 
 (with-eval-after-load 'vterm
@@ -649,6 +681,9 @@ Version: 2018-12-23 2022-04-07"
   :after (shell-maker acp))
 
 (global-set-key (kbd "C-c c") 'agent-shell-anthropic-start-claude-code)
+
+(with-eval-after-load 'agent-shell-diff
+  (require 'agent-shell-diff-edit))
 
 (setq markdown-command "pandoc")
 
