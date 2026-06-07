@@ -108,9 +108,7 @@ Otherwise the startup will be very slow."
     color-theme-sanityinc-tomorrow
     flycheck                    ;; syntax check for python, seems to work less buggy than flymake
     magit
-    all-the-icons              ;;all-the-icons-install-fonts might be needed for the first run (out of emacs)
     shackle
-    all-the-icons-dired
     dired-explorer  ;;jump to file starting with "keystroke"
     yafolding     ;;code folding
     reftex
@@ -317,9 +315,6 @@ Prompt only if there are unsaved changes."
 
 ;; Content is not centered by default. To center, set
 (setq dashboard-center-content t)
-(setq dashboard-icon-type 'all-the-icons) ;; use `all-the-icons' package
-
-(setq dashboard-set-file-icons t)
 (setq dashboard-set-footer nil)
 
 (setq dashboard-items '((recents  . 5)
@@ -671,10 +666,20 @@ Version: 2018-12-23 2022-04-07"
 ;;=======================================
 ;; agent-shell (LLM agent via ACP protocol)
 ;;=======================================
-(add-to-list 'exec-path "/home/voit/.local/bin")
-(add-to-list 'exec-path "/snap/bin")
-(setenv "PATH" (concat "/home/voit/.local/bin:/snap/bin:" (getenv "PATH")))
 (use-package shell-maker :ensure t)
+
+(with-eval-after-load 'shell-maker
+  (defvar shell-maker--curl-version-supported-cache 'unchecked)
+  (advice-add 'shell-maker--curl-version-supported :override
+              (lambda ()
+                (when (eq shell-maker--curl-version-supported-cache 'unchecked)
+                  (setq shell-maker--curl-version-supported-cache
+                        (let ((str (shell-command-to-string
+                                    (concat shell-maker-curl-executable " --version "))))
+                          (when (string-match "\\([0-9]+\\.[0-9]+\\.[0-9]+\\)" str)
+                            (version<= "7.76" (match-string 1 str))))))
+                shell-maker--curl-version-supported-cache)))
+
 (use-package acp :ensure t)
 (use-package agent-shell
   :ensure t
