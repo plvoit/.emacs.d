@@ -507,6 +507,49 @@ Prompt only if there are unsaved changes."
 (desktop-save-mode 1)
 
 ;;===================================================
+;; OpenSpec agent buffer naming
+;;===================================================
+(defun my/openspec-agent-rename-on-opsx ()
+  "Rename agent buffer when an opsx command is submitted.
+Reads input before shell-maker-submit clears it, then defers the
+rename via a zero-second timer so shell-maker-submit can still look
+up the buffer by its original name."
+  (when (derived-mode-p 'agent-shell-mode)
+    (let* ((proc (get-buffer-process (current-buffer)))
+           (input (when proc
+                    (string-trim
+                     (buffer-substring-no-properties
+                      (process-mark proc) (point-max)))))
+           (buf (current-buffer)))
+      (when (and input (string-prefix-p "/opsx:" input))
+        (cond
+         ((string-match "^/opsx:\\(?:apply\\|propose\\|explore\\)[ \t]+\\(\\S-+\\)" input)
+          (let ((change (match-string 1 input)))
+            (run-with-timer
+             0 nil
+             (lambda (b name)
+               (when (buffer-live-p b)
+                 (with-current-buffer b
+                   (unless (local-variable-p 'my/openspec-original-buffer-name)
+                     (setq-local my/openspec-original-buffer-name (buffer-name)))
+                   (rename-buffer (format "c@%s" name) t)
+                   (setq-local shell-maker--buffer-name-override (buffer-name)))))
+             buf change)))
+         ((string-match "^/opsx:archive" input)
+          (run-with-timer
+           0 nil
+           (lambda (b)
+             (when (buffer-live-p b)
+               (with-current-buffer b
+                 (when (local-variable-p 'my/openspec-original-buffer-name)
+                   (rename-buffer my/openspec-original-buffer-name t)
+                   (setq-local shell-maker--buffer-name-override (buffer-name))
+                   (kill-local-variable 'my/openspec-original-buffer-name)))))
+           buf)))))))
+
+(advice-add 'shell-maker-submit :before #'my/openspec-agent-rename-on-opsx)
+
+;;===================================================
 ;; Buffer and windows
 ;;===================================================
 ;;To have it instead open the buffer menu and switch to it in one action, rebind the key as follows:
