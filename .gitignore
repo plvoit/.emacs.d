@@ -8,6 +8,8 @@
 !setup_info.md
 !lisp/
 !site-lisp/*
+!site-lisp/openspec.el/
+!site-lisp/openspec.el/*
 !lisp/*
 !site-lisp/
 !elpa/popon-20230703.102713/
