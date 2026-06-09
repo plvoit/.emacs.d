@@ -133,6 +133,7 @@ Otherwise the startup will be very slow."
     embark-consult
     gcmh
     doom-themes
+    catppuccin-theme
     which-key
     eglot
     lsp-mode
@@ -421,7 +422,8 @@ Prompt only if there are unsaved changes."
 ;;(define-key input-decode-map [C-m] ["RET"])    
 
 ;; Load the theme of choice:
-(load-theme 'zenburn t)
+(setq catppuccin-flavor 'frappe) ;; options: latte frappe macchiato mocha
+(load-theme 'catppuccin :no-confirm)
 
 ;;(setq ido-enable-flex-matching t)    ;;ido mode settings
 ;;(setq ido-everywhere t)
@@ -448,16 +450,19 @@ Prompt only if there are unsaved changes."
 
 
 (defun day ()
-  "Switches to day theme"
+  "Switches to Catppuccin Latte (light theme)"
   (interactive)
-  (load-theme 'adwaita)
-  (set-cursor-color "#63c7ea")) ;; replace with your desired color
+  (setq catppuccin-flavor 'latte)
+  (load-theme 'catppuccin :no-confirm)
+  (catppuccin-reload))
 
 
 (defun night ()
-  "Switches to dark theme"
+  "Switches to Catppuccin Frappé (cool dark theme)"
   (interactive)
-  (load-theme 'zenburn t))
+  (setq catppuccin-flavor 'frappe)
+  (load-theme 'catppuccin :no-confirm)
+  (catppuccin-reload))
 
 (defun conda (environment)
   "Loads a Python conda environment."
