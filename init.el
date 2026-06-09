@@ -167,9 +167,9 @@ Prompt only if there are unsaved changes."
        (16   (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
              (delete-other-windows)))))
 
-(use-package guru-mode
-  :straight t
-  :config (guru-global-mode +1))
+;; (use-package guru-mode
+;;   :straight t
+;;   :config (guru-global-mode +1))
 
 ;;ediff set vertical split as default-directory
 ;; (custom-set-variables
@@ -397,7 +397,9 @@ Prompt only if there are unsaved changes."
                           :foreground "#CC9393" :box nil))
   ;; Terminal: plain tab-line without powerline bitmap separators
   (setq tab-line-new-button-show nil)
-  (setq tab-line-close-button-show nil))
+  (setq tab-line-close-button-show nil)
+  (set-face-attribute 'tab-line-tab-current nil
+                      :background "#e5c890" :foreground "black" :bold t :box nil))
 
 ;; desktop-save-mode disabled: re-spawns LSP servers for all previous files on startup
 ;; Use consult-recent-file (C-c r) to re-open what you need
