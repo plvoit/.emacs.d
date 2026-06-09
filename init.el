@@ -22,36 +22,16 @@
 (straight-use-package 'use-package)
 
 ;; ===================================
-;; MELPA Package Support
+;; Package setup (package.el for existing elpa installs)
 ;; ===================================
-;; Enables basic packaging support
 (require 'package)
-
-;; Speed up startup
-;;
-
-;; Defer garbage collection further back in the startup process
-(setq gc-cons-threshold most-positive-fixnum)
+(package-initialize)
 
 ;; Prevent flashing of unstyled modeline at startup
 (setq-default mode-line-format nil)
 
 ;; Don't pass case-insensitive to `auto-mode-alist'
 (setq auto-mode-case-fold nil)
-
-;;
-;; (unless (or (daemonp) noninteractive init-file-debug)
-;;   ;; Suppress file handlers operations at startup
-;;   ;; `file-name-handler-alist' is consulted on each call to `require' and `load'
-;;   (let ((old-value file-name-handler-alist))
-;;     (setq file-name-handler-alist nil)
-;;     (set-default-toplevel-value 'file-name-handler-alist file-name-handler-alist)
-;;    (add-hook 'emacs-startup-hook
-;;              (lambda ()
-;;                "Recover file name handlers."
-;;                (setq file-name-handler-alist
-;;                      (delete-dups (append file-name-handler-alist old-value))))
-;;              101)))
 
 ;; Load path
 ;; Optimize: Force "lisp"" and "site-lisp" at the head to reduce the startup time.
@@ -60,100 +40,13 @@
   (dolist (dir '("lisp" "site-lisp"))
     (push (expand-file-name dir user-emacs-directory) load-path)))
 
-(defun add-subdirs-to-load-path (&rest _)
-  "Add subdirectories to `load-path'.
-
-Don't put large files in `site-lisp' directory, e.g. EAF.
-Otherwise the startup will be very slow."
-  (let ((default-directory (expand-file-name "site-lisp" user-emacs-directory)))
-    (normal-top-level-add-subdirs-to-load-path)))
-
-
-(advice-add #'package-initialize :after #'update-load-path)
-(advice-add #'package-initialize :after #'add-subdirs-to-load-path)
-
 
 (update-load-path)
 
-;; Adds the Melpa archive to the list of available repositories
-(add-to-list 'package-archives
-            '("melpa" . "https://melpa.org/packages/") t)
-
-(setq package-archives
-      '(("gnu" . "https://elpa.gnu.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")))
-
-;; Initializes the package infrastructure
-(package-initialize)
-
-
 (eval-and-compile
-  (setq use-package-always-ensure t
-        use-package-expand-minimally t))
+  (setq use-package-expand-minimally t))
 
-;;(package-refresh-contents) ;; needed if packages are sometimes not installed properly
 
-;; Installs packages
-;;
-;; myPackages contains a list of package names
-(defvar myPackages
-  '(better-defaults                 ;; Set up some better Emacs defaults
-    ;;elpy                            ;; Python IDE
-    zoom                            ;; better window splitting
-    ;;ace-window                      ;; easier switching between windows
-    markdown-mode
-    multiple-cursors                ;; multi editing like PyCharm
-    expand-region                   ;; nice expansion of selection like in PyCharm
-    zenburn-theme
-    color-theme-sanityinc-tomorrow
-    flycheck                    ;; syntax check for python, seems to work less buggy than flymake
-    magit
-    shackle
-    dired-explorer  ;;jump to file starting with "keystroke"
-    yafolding     ;;code folding
-    reftex
-    auctex
-    doom-modeline
-    dashboard
-    guru-mode
-    popper
-    company
-    mini-frame
-    corfu
-    cape
-    use-package
-    emacs
-    marginalia
-    vertico
-    orderless
-    vertico-posframe
-    consult
-    consult-flyspell
-    embark
-    embark-consult
-    gcmh
-    doom-themes
-    catppuccin-theme
-    which-key
-    eglot
-    lsp-mode
-    lsp-pyright
-    powerline
-    pyvenv
-    realgud
-    quelpa ;;enable when new setup
-    dired-sidebar
-    )
-  )
-
-;; Scans the list in myPackages
-;; If the package listed is not already installed, install it
-(mapc #'(lambda (package)
-          (unless (package-installed-p package)
-            (package-install package)))
-      myPackages)
-
-   
 ;; ===================================
 ;; Basic Customization
 ;; ===================================
@@ -163,12 +56,29 @@ Otherwise the startup will be very slow."
 
 ;; Garbage Collector Magic Hack
 (use-package gcmh
+  :straight t
   :diminish
   :hook (emacs-startup . gcmh-mode)
   :init
   (setq gcmh-idle-delay 'auto
         gcmh-auto-idle-delay-factor 10
         gcmh-high-cons-threshold #x1000000)) ;; 16MB    
+
+;;=======================================
+;; Packages (straight.el managed)
+;;=======================================
+(use-package better-defaults :straight t :demand t :config (ido-mode -1))
+(use-package zoom :straight t :if (display-graphic-p) :hook (after-init . zoom-mode))
+(use-package markdown-mode :straight t :defer t)
+(use-package magit :straight t :defer t)
+(use-package flycheck :straight t :defer t)
+(use-package yafolding :straight t :defer t :hook (prog-mode . yafolding-mode))
+(use-package shackle :straight t)
+(use-package auctex :straight t :defer t)
+(use-package zenburn-theme :straight t :defer t)
+(use-package color-theme-sanityinc-tomorrow :straight t :defer t)
+(use-package pyvenv :straight t :defer t)
+(use-package dired-explorer :straight t :hook (dired-mode . dired-explorer-mode))
 
 ;;=======================================
 ;; eat terminal emulator (via straight.el)
@@ -192,22 +102,13 @@ Otherwise the startup will be very slow."
     (global-set-key (kbd "M-*") 'hs-show-all)
     (global-set-key (kbd "M-'") 'hs-hide-all)))
 
-;; Make corfu work in terminal enable for new setup
-;; (quelpa '(popon :fetcher git
-;;                 :url "https://codeberg.org/akib/emacs-popon.git"))
-
-;; (quelpa '(corfu-terminal
-;;           :fetcher git
-;;           :url "https://codeberg.org/akib/emacs-corfu-terminal.git"))
-
-(unless (display-graphic-p)
-  (corfu-terminal-mode +1))
 
 
-;;Enable key help functions
-(require 'which-key)
-(which-key-mode)
-(which-key-setup-side-window-bottom)
+(use-package which-key
+  :straight t
+  :defer t
+  :hook (after-init . which-key-mode)
+  :config (which-key-setup-side-window-bottom))
 
 
 (setq inhibit-startup-message t)    ;; Hide the startup message
@@ -266,7 +167,9 @@ Prompt only if there are unsaved changes."
        (16   (mapc 'kill-buffer (delq (current-buffer) (buffer-list)))
              (delete-other-windows)))))
 
-(guru-global-mode +1)
+(use-package guru-mode
+  :straight t
+  :config (guru-global-mode +1))
 
 ;;ediff set vertical split as default-directory
 ;; (custom-set-variables
@@ -278,11 +181,15 @@ Prompt only if there are unsaved changes."
 ;; Editing
 ;;==================================
 
-(require 'multiple-cursors)   ;;multiple editing like in pycharm
-(define-key global-map (kbd "M-j") 'mc/mark-next-like-this-word)
+(use-package multiple-cursors
+  :straight t
+  :defer t
+  :bind ("M-j" . mc/mark-next-like-this-word))
 
-(require 'expand-region)           ;; smart expanding selection of expressions
-(global-set-key (kbd "C-M-W") 'er/expand-region)
+(use-package expand-region
+  :straight t
+  :defer t
+  :bind ("C-M-W" . er/expand-region))
 
 
 ;; Automatic parenthesis pairing
@@ -300,12 +207,14 @@ Prompt only if there are unsaved changes."
 ;; Dashboard
 ;; ===================================
 
-(require 'dashboard)
-(dashboard-setup-startup-hook)
+(use-package dashboard
+  :straight t
+  :demand t
+  :config (dashboard-setup-startup-hook))
 ;; Set the title
 (setq dashboard-banner-logo-title "Use registers! \nC-x r Space = set register, C-x r j = jump to register \nC-x r s = save region to registers, C-x r i = insert region\nrgrep find text in files\nfind-name-dired for wildcard file search\nC-j = multiple cursors\nC-x 0 = delete window\nC-x C-j = dired jump to folder of current buffer, C-M-n = copy filename, C-M-p = copy filename with fullpath\nC-M n(or p) = navigate parenthesis\nM-y = cycle through kills, C-x C-x = jump point to last position?\nC-c m = toggle markdown rendered preview / raw text\nC-c c = start Claude")
 ;; Set the banner
-(setq dashboard-startup-banner 'logo)
+(setq dashboard-startup-banner (if (display-graphic-p) 'logo 1))
 ;; Value can be
 ;; - nil to display no banner
 ;; - 'official which displays the official emacs logo
@@ -322,39 +231,12 @@ Prompt only if there are unsaved changes."
                         (bookmarks . 5)))
 
 ;; ===================================
-;; Doom Modeline
+;; Modeline
 ;; ===================================
 
-
-(require 'doom-modeline)
-(doom-modeline-mode 1)
-
-;; Whether display icons in the mode-line.
-;; While using the server mode in GUI, should set the value explicitly.
-(setq doom-modeline-icon nil)
-
-;; Whether display the icon for `major-mode'. It respects `doom-modeline-icon'.
-(setq doom-modeline-major-mode-icon nil)
-
-;; Whether display the colorful icon for `major-mode'.
-;; It respects `nerdg-icons-color-icons'.
-(setq doom-modeline-major-mode-color-icon nil)
-
-;; Whether display the icon for the buffer state. It respects `doom-modeline-icon'.
-(setq doom-modeline-buffer-state-icon nil)
-
-;; Whether display the modification icon for the buffer.
-;; It respects `doom-modeline-icon' and `doom-modeline-buffer-state-icon'.
-(setq doom-modeline-buffer-modification-icon t)
-
-;; Customize doom-modeline to show the environment version
-(setq doom-modeline-env-version t)
-
-;;show minibuffer on the top
-;;(require 'mini-frame)
-;;(mini-frame-mode 1) ;; Todo: disable company dictionary
-;;(setq-default header-line-format mode-line-format) ; Copy mode-line this seems to work but maybe the info and help can now not be seen anymore
-;;(setq-default mode-line-format nil) ; Remove mode-liney
+(use-package mood-line
+  :straight t
+  :config (mood-line-mode))
 
 
 ;; ===================================
@@ -403,14 +285,15 @@ Prompt only if there are unsaved changes."
 ;;     (end-of-buffer-other-window)								   
 ;; 	))															   
 
-(global-set-key (kbd "C-o") 'popper-toggle-latest)
-(global-set-key (kbd "M-o") 'popper-cycle)
-(global-set-key (kbd "C-M-`") 'popper-toggle-type)
-(popper-mode +1)
-
-;; For echo-area hints
-(require 'popper-echo)
-(popper-echo-mode +1)
+(use-package popper
+  :straight t
+  :bind (("C-o"   . popper-toggle-latest)
+         ("M-o"   . popper-cycle)
+         ("C-M-`" . popper-toggle-type))
+  :config
+  (popper-mode +1)
+  (use-package popper-echo
+    :config (popper-echo-mode +1)))
 
 ;;C-m is the same as Enter, this changes it. From https://emacs.stackexchange.com/questions/20240/how-to-distinguish-c-m-from-return
 ;;(if (equal system-name "GK-NB-14.ad.umwelt.uni-potsdam.de")
@@ -420,6 +303,8 @@ Prompt only if there are unsaved changes."
 ;   (define-key input-decode-map [?\C-m] ["RET"]))
 
 ;;(define-key input-decode-map [C-m] ["RET"])    
+
+(use-package catppuccin-theme :straight t)
 
 ;; Load the theme of choice:
 (setq catppuccin-flavor 'frappe) ;; options: latte frappe macchiato mocha
@@ -440,8 +325,9 @@ Prompt only if there are unsaved changes."
 ;;(add-to-list 'company-backends '(company-jedi)) ;;doesnt work
 
 
-;; Start Emacs in fullscreen mode
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; Start Emacs in fullscreen mode (GUI only; terminal fills the terminal window)
+(when (display-graphic-p)
+  (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 
 ;;===================================================
@@ -486,30 +372,36 @@ Prompt only if there are unsaved changes."
 ;;===================================================
 (global-tab-line-mode t)
 
-(require 'powerline)
-(defvar my/tab-height 22)
-(defvar my/tab-left (powerline-wave-right 'tab-line nil my/tab-height))
-(defvar my/tab-right (powerline-wave-left nil 'tab-line my/tab-height))
+(if (display-graphic-p)
+    (progn
+      (use-package powerline :straight t)
+      (defvar my/tab-height 22)
+      (defvar my/tab-left (powerline-wave-right 'tab-line nil my/tab-height))
+      (defvar my/tab-right (powerline-wave-left nil 'tab-line my/tab-height))
 
-(defun my/tab-line-tab-name-buffer (buffer &optional _buffers)
-  (powerline-render (list my/tab-left
-                          (format " %s  " (buffer-name buffer))
-                          my/tab-right)))
+      (defun my/tab-line-tab-name-buffer (buffer &optional _buffers)
+        (powerline-render (list my/tab-left
+                                (format " %s  " (buffer-name buffer))
+                                my/tab-right)))
 
-(setq tab-line-tab-name-function #'my/tab-line-tab-name-buffer)
-(setq tab-line-new-button-show nil)
-(setq tab-line-new-button-show nil)
-(setq tab-line-close-button-show nil)
+      (setq tab-line-tab-name-function #'my/tab-line-tab-name-buffer)
+      (setq tab-line-new-button-show nil)
+      (setq tab-line-close-button-show nil)
 
-(set-face-attribute 'tab-line-tab nil ;; active tab in another window
-      :inherit 'tab-line
-      :foreground "gray70" :background "gray90" :box nil)
-(set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
-      :background "#ffd699" :foreground "black" :box nil)
-(set-face-attribute 'tab-line-tab-modified nil ;; modified tab in current window
- 		     :foreground "#CC9393" :box nil)
+      (set-face-attribute 'tab-line-tab nil ;; active tab in another window
+            :inherit 'tab-line
+            :foreground "gray70" :background "gray90" :box nil)
+      (set-face-attribute 'tab-line-tab-current nil ;; active tab in current window
+            :background "#ffd699" :foreground "black" :box nil)
+      (set-face-attribute 'tab-line-tab-modified nil ;; modified tab in current window
+                          :foreground "#CC9393" :box nil))
+  ;; Terminal: plain tab-line without powerline bitmap separators
+  (setq tab-line-new-button-show nil)
+  (setq tab-line-close-button-show nil))
 
-(desktop-save-mode 1)
+;; desktop-save-mode disabled: re-spawns LSP servers for all previous files on startup
+;; Use consult-recent-file (C-c r) to re-open what you need
+;;(desktop-save-mode 1)
 
 ;;===================================================
 ;; OpenSpec agent buffer naming
@@ -578,10 +470,6 @@ up the buffer by its original name."
 
 ;;show file size in Megabyte
 (setq dired-listing-switches "-lhaG --group-directories-first")
-
-;; to navigate with first letter
-(require 'dired-explorer)
-(add-hook 'dired-mode-hook 'dired-explorer-mode)
 
 ;; sorting function from http://xahlee.info/emacs/emacs/dired_sort.html
 (defun xah-dired-sort ()
@@ -673,27 +561,30 @@ Version: 2018-12-23 2022-04-07"
 ;;Corfu auto complete
 ;;=======================================
 (use-package corfu
+  :straight t
   :custom
-  (corfu-auto t)                 ;; Disable auto completion
-  (corfu-auto-prefix 2)          ;; Trigger auto completion with 2 chars
-  (corfu-quit-at-boundary t)     ;; Automatically quit at word boundary
-  (corfu-quit-no-match t)        ;; Automatically quit if there is no match
-  (corfu-preview-current nil)    ;; Disable current candidate preview
-  (corfu-preselect 'prompt)      ;; Preselect the prompt
-  (corfu-scroll-margin 5)        ;; Use scroll margin
+  (corfu-auto t)                    ;; Enable auto completion
+  (corfu-auto-prefix 2)             ;; Trigger auto completion with 2 chars
+  (corfu-quit-at-boundary t)        ;; Automatically quit at word boundary
+  (corfu-quit-no-match t)           ;; Automatically quit if there is no match
+  (corfu-preview-current nil)       ;; Disable current candidate preview
+  (corfu-preselect 'prompt)         ;; Preselect the prompt
+  (corfu-scroll-margin 5)           ;; Use scroll margin
+  (global-corfu-minibuffer nil)     ;; Let vertico handle the minibuffer
   :bind ("<backtab>" . completion-at-point)
   :hook ((after-init . global-corfu-mode)
          (global-corfu-mode . corfu-popupinfo-mode)))
 
-;;this messes with the colors in terminal mode. Comes from init-corfu from centaur emacs
-;; but I deactivated it
-;;(unless (display-graphic-p)
-;;  (use-package corfu-terminal
-
-;;:hook (global-corfu-mode . corfu-terminal-mode)))
+(use-package corfu-terminal
+  :straight (:host codeberg :repo "akib/emacs-corfu-terminal")
+  :after corfu
+  :config
+  (unless (display-graphic-p)
+    (corfu-terminal-mode +1)))
 
 ;; Add extensions
 (use-package cape
+  :straight t
   :init
   (setq cape-dict-case-fold t)
   (add-to-list 'completion-at-point-functions #'cape-file)
@@ -707,14 +598,15 @@ Version: 2018-12-23 2022-04-07"
 (require 'init-lsp)
 (require 'init-python)
 (require 'init-double-commander)
-(require 'openspec)
+(use-package openspec
+  :load-path "site-lisp/openspec.el")
 
 
 
 ;;=======================================
 ;; agent-shell (LLM agent via ACP protocol)
 ;;=======================================
-(use-package shell-maker :ensure t)
+(use-package shell-maker :straight t)
 
 (with-eval-after-load 'shell-maker
   (defvar shell-maker--curl-version-supported-cache 'unchecked)
@@ -728,9 +620,9 @@ Version: 2018-12-23 2022-04-07"
                             (version<= "7.76" (match-string 1 str))))))
                 shell-maker--curl-version-supported-cache)))
 
-(use-package acp :ensure t)
+(use-package acp :straight t)
 (use-package agent-shell
-  :ensure t
+  :straight t
   :after (shell-maker acp))
 
 (global-set-key (kbd "C-c c") 'agent-shell-anthropic-start-claude-code)
@@ -786,8 +678,9 @@ Version: 2018-12-23 2022-04-07"
 ;;dired sidebar
 ;;=======================================
 
-(add-to-list 'load-path "path from pwd")
-(require 'dired-sidebar)
+(use-package dired-sidebar
+  :straight t
+  :commands (dired-sidebar-toggle-sidebar))
 (with-eval-after-load 'dired-sidebar
   ;; Unbind "^" in `dired-sidebar-mode-map`
   (define-key dired-sidebar-mode-map (kbd "^") nil))

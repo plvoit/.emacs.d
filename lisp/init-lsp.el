@@ -37,80 +37,22 @@
          ((yaml-mode yaml-ts-mode) . eglot-ensure))
   :config
   (use-package consult-eglot
+    :straight t
     :bind (:map eglot-mode-map
             ("C-M-." . consult-eglot-symbols))))
 
 
-;; Performace tuning
-;; @see https://emacs-lsp.github.io/lsp-mode/page/performance/
-(setq read-process-output-max (* 1024 1024)) ;; 1MB
-(setenv "LSP_USE_PLISTS" "true")
-
-;; Emacs client for the Language Server Protocol
-;; https://github.com/emacs-lsp/lsp-mode#supported-languages
-(use-package lsp-mode
-  :diminish
-   :defines (lsp-diagnostics-disabled-modes lsp-clients-python-library-directories)
-   :autoload lsp-enable-which-key-integration
-   :commands (lsp-format-buffer lsp-organize-imports)
-   :hook ((prog-mode . (lambda ()
-                         (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
-                           (lsp-deferred))))
-          ((yaml-mode yaml-ts-mode) . lsp-deferred)
-          (lsp-mode . (lambda ()
-                        ;; Integrate `which-key'
-                        (lsp-enable-which-key-integration)
-
-                        )))
-   :bind (:map lsp-mode-map
-          ("C-c C-d" . lsp-describe-thing-at-point)
-          ([remap xref-find-definitions] . lsp-find-definition)
-          ([remap xref-find-references] . lsp-find-references))
-   :init (setq lsp-keymap-prefix "C-c l"
-               lsp-keep-workspace-alive nil
-               lsp-signature-auto-activate nil
-               lsp-modeline-code-actions-enable nil
-              lsp-modeline-diagnostics-enable nil
-              lsp-modeline-workspace-status-enable nil
-
-              lsp-semantic-tokens-enable t
-              lsp-progress-spinner-type 'progress-bar-filled
-
-                lsp-enable-file-watchers nil
-                lsp-enable-folding nil
-                lsp-enable-symbol-highlighting nil
-                lsp-enable-text-document-color nil
-
-                lsp-enable-indentation nil
-                lsp-enable-on-type-formatting nil
-
-                ;; For diagnostics
-                lsp-diagnostics-disabled-modes '(markdown-mode gfm-mode)
-
-                ;; For clients
-                lsp-clients-python-library-directories '("/usr/local/" "/usr/"))
-    :config
-    (use-package consult-lsp
-      :bind (:map lsp-mode-map
-             ("C-M-." . consult-lsp-symbols)))
-
-    (with-no-warnings
-     ;; Enable `lsp-mode' in sh/bash/zsh
-      (defun my-lsp-bash-check-sh-shell (&rest _)
-        (and (memq major-mode '(sh-mode bash-ts-mode))
-             (memq sh-shell '(sh bash zsh))))
-      (advice-add #'lsp-bash-check-sh-shell :override #'my-lsp-bash-check-sh-shell)
-      (add-to-list 'lsp-language-id-configuration '(bash-ts-mode . "shellscript"))
-
-      ))
+(setq read-process-output-max (* 1024 1024)) ;; 1MB for LSP
 
 ;;======================================================   
 ;; Debug
 ;;======================================================
 
-;; Configure realgud for Python mode
-(require 'realgud)
-(setq realgud-safe-mode nil)
+(use-package realgud
+  :straight t
+  :defer t
+  :commands (realgud:pdb realgud:ipdb realgud:gdb)
+  :config (setq realgud-safe-mode nil))
 
 
 ;; (require 'dap-python)
@@ -144,27 +86,6 @@
 ;; init (when (executable-find "python3")
 ;;        (setq dap-python-executable "python3")))
 
-;; Python
-;;wider lines for auto-formatting (80 is the default)
-;; this has no effect
-(setq lsp-pylsp-plugins-flake8-max-line-length 120)
-
-(use-package lsp-pyright
-  :preface
-  ;; Use yapf to format
-  (defun lsp-pyright-format-buffer ()
-    (interactive)
-    (when (and (executable-find "yapf") buffer-file-name)
-      (call-process "yapf" nil nil nil "-i" buffer-file-name)))
-  :hook (((python-mode python-ts-mode) . (lambda ()
-                                           (require 'lsp-pyright)
-                                           (add-hook 'after-save-hook #'lsp-pyright-format-buffer t t))))
-  :init (when (executable-find "python3")
-          (setq lsp-pyright-python-executable-cmd "python3")))
-
-;; Formatting of Python Scripts
-(setq lsp-pyright-formatting-provider "yapf")  ;; Or "yapf" if you prefer YAPF
-(setq lsp-pyright-formatting-options '(:lineLength 120))
 
 ;; ;; C/C++/Objective-C
 ;; (use-package ccls
@@ -191,19 +112,6 @@
 ;; (use-package lsp-java
 ;;   :hook ((java-mode java-ts-mode jdee-mode) . (lambda () (require 'lsp-java)))))
 
-(lsp-headerline-breadcrumb-mode -1)
-
-;; change maximum linewidth from 80 to 120 character
-;; this is stuff from chat gpt but it doesn't seems to work
-(setq lsp-pyls-plugins-pycodestyle-max-line-length 120)
-(setq lsp-pyls-plugins-black-enabled t)
-(setq lsp-pyls-plugins-black-args '("--line-length" "120"))
-
-(setq lsp-eldoc-enable-hover nil)
-(setq lsp-completion-provider :none)
-
-
-(setq lsp-pylsp-plugins-flake8-max-line-length 120)
 
 (provide 'init-lsp)
 

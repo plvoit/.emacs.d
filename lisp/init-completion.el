@@ -35,8 +35,8 @@
 ;; A few more useful configurations...
 (use-package emacs
   :init
-  ;; TAB cycle if there are only few candidates
-  (setq completion-cycle-threshold 3)
+  ;; Let vertico handle all candidate display; disable default cycling
+  (setq completion-cycle-threshold nil)
 
   ;; Only list the commands of the current modes
   (when (boundp 'read-extended-command-predicate)
@@ -52,16 +52,19 @@
 
 ;; Optionally use the `orderless' completion style.
 (use-package orderless
+  :straight t
   :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
   (setq completion-styles '(orderless basic)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles . (partial-completion))))))
+        completion-category-overrides '((file (styles basic partial-completion)))))
 
 (use-package vertico
-  :hook (after-init . vertico-mode))
+  :straight t
+  :init
+  (vertico-mode 1))
 
 ;;(when (childframe-completion-workable-p)
 ;;  (use-package vertico-posframe
@@ -74,9 +77,11 @@
 
 
 (use-package marginalia
+  :straight t
   :hook (after-init . marginalia-mode))
 
 (use-package consult
+  :straight t
   :bind (;; C-c bindings in `mode-specific-map'
          ("C-c M-x" . consult-mode-command)
          ("C-c h"   . consult-history)
@@ -183,9 +188,11 @@
   (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help))
 
 (use-package consult-flyspell
+  :straight t
   :bind ("M-g s" . consult-flyspell))
 
 (use-package embark
+  :straight t
   :bind (("s-." . embark-act)
          ("s-M-." . embark-dwim)
          ([remap describe-bindings] . embark-bindings))
@@ -239,11 +246,10 @@ targets."
                 :around #'embark-hide-which-key-indicator)))
 
 (use-package embark-consult
+  :straight t
   :bind (:map minibuffer-mode-map
          ("C-c C-o" . embark-export))
   :hook (embark-collect-mode . consult-preview-at-point-mode))
-
-(lsp-headerline-breadcrumb-mode -1)
 
 (provide 'init-completion)
 

@@ -68,10 +68,9 @@
     (setenv "WORKON_HOME" "/home/voit/miniconda3/envs/"))
 
 
-;;code folding based on indentation
-(require 'yafolding)
-(define-key global-map (kbd "C-c f") 'hs-hide-all)
-(define-key global-map (kbd "C-c u") 'hs-show-all)
+;;code folding based on indentation (yafolding loaded via init.el use-package)
+(global-set-key (kbd "C-c f") 'hs-hide-all)
+(global-set-key (kbd "C-c u") 'hs-show-all)
 
 
 (if (display-graphic-p)
