@@ -507,6 +507,44 @@ Version: 2018-12-23 2022-04-07"
     (call-interactively 'dired-copy-filename-as-kill)))
 
 
+;; Typeahead: type lowercase letters to jump to the first matching file/dir.
+;; Uppercase letters retain standard dired commands (D, R, C, U, M, ...).
+;; Accumulates while typing; post-command-hook resets on any other command.
+(defvar my/dired-typeahead-string "")
+
+(defun my/dired-typeahead-reset ()
+  "Reset typeahead string after any non-typeahead command."
+  (unless (eq this-command 'my/dired-typeahead)
+    (setq my/dired-typeahead-string "")))
+
+(defun my/dired-typeahead ()
+  "Typeahead file search: accumulates chars, resets on any other command."
+  (interactive)
+  (setq my/dired-typeahead-string
+        (concat my/dired-typeahead-string (char-to-string last-command-event)))
+  (message "Search: %s" my/dired-typeahead-string)
+  (let ((target nil)
+        (search-str my/dired-typeahead-string))
+    (save-excursion
+      (goto-char (point-min))
+      (while (and (not target) (not (eobp)))
+        (when-let ((fn (dired-get-filename 'no-dir t)))
+          (when (string-prefix-p search-str fn t)
+            (setq target (point))))
+        (forward-line 1)))
+    (if target
+        (progn (goto-char target) (dired-move-to-filename))
+      (message "No match: %s" my/dired-typeahead-string))))
+
+(defun my/dired-activate-typeahead ()
+  "Bind lowercase a-z to typeahead in the current dired buffer."
+  (make-local-variable 'my/dired-typeahead-string)
+  (setq my/dired-typeahead-string "")
+  (add-hook 'post-command-hook #'my/dired-typeahead-reset nil t)
+  (dolist (c (number-sequence ?a ?z))
+    (local-set-key (vector c) #'my/dired-typeahead)))
+
+
 (add-hook 'dired-mode-hook
   (lambda ()
    (local-set-key [f5] 'dired-do-copy)
@@ -522,7 +560,8 @@ Version: 2018-12-23 2022-04-07"
    (local-set-key (kbd "C-g") 'revert-buffer)
    (local-set-key (kbd "C-M-s") 'xah-dired-sort)
    (local-set-key (kbd "C-M-n") 'dired-copy-filename-as-kill)
-   (local-set-key (kbd "C-M-p") 'my-dired-fullpath-filename)))
+   (local-set-key (kbd "C-M-p") 'my-dired-fullpath-filename)
+   (my/dired-activate-typeahead)))
    ;;(local-set-key (kbd "<RET>") 'dired-find-file)))
    ;;(local-set-key (kbd "<RET>") 'dired-find-alternate-file))) ;; this command closes the buffer in the other window.... 
    ;;(local-set-key (kbd "<DEL>") 'dired-find-alternate-file "..")))
@@ -699,21 +738,8 @@ Version: 2018-12-23 2022-04-07"
 
 (setq dired-sidebar-theme 'none)
 
-;; Enable jump-to-letter functionality for all printable keys in dired-sidebar
-;; this works just if we have no Icons for dired
-(defun my/dired-sidebar-jump-to-letter ()
-  "Jump to the first file or directory in dired-sidebar starting with the letter pressed.
-Ignores capitalization."
-  (interactive)
-  (let* ((char (read-char "Jump to: ")) ;; Read a single character
-         (case-fold-search t)          ;; Ignore case
-         (search-regexp (format "^\\s-*%c" (upcase char)))) ;; Build the search regex
-    (goto-char (point-min)) ;; Start from the beginning
-    (unless (re-search-forward search-regexp nil t)
-      (message "No file or directory found starting with '%c'" char))))
-;; Hook it into dired-sidebar mode
 (with-eval-after-load 'dired-sidebar
-  (add-hook 'dired-sidebar-mode-hook #'my/dired-sidebar-activate-jump-to-letter))
+  (add-hook 'dired-sidebar-mode-hook #'my/dired-activate-typeahead))
 ;;=======================================
 ;;Neotree sidebar
 ;;=======================================
@@ -762,5 +788,8 @@ Ignores capitalization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(region ((t (:extend t :background "gray")))))
+
+(setq initial-buffer-choice "~")
+(add-to-list 'warning-suppress-types '(comp))
 
 
